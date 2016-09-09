@@ -1,0 +1,11 @@
+included: 
+  - Sources/Phakchi
+  - Tests/Phakchi
+disabled_rules:
+  - force_cast
+  - force_try
+  - function_body_length
+  - variable_name
+  - type_body_length
+  - line_length
+  - conditional_binding_cascade
