@@ -1,20 +1,23 @@
+
 # Phakchi
 
 Pact consumer client library in Swift
 
-`Phakchi` provides a Swift version DSL for creating pact file.
+`Phakchi` provides a DSL in Swift for creating pact files.
 
-See [Pact](https://github.com/realestate-com-au/pact) README for detail.
+See the [Pact](https://github.com/realestate-com-au/pact) README for detail.
 
 ## Installation
 
 ### Carthage
 
-Add this line to your `Cartfile.private` and follow Carthage instruction.
+Add the following line to your `Cartfile.private`.
 
 ```
-git 'cookpad/Phakchi'
+github "cookpad/Phakchi"
 ```
+
+For information on how to use Carthage, please refer to the official Carthage documentation.
 
 ### CocoaPods
 
@@ -27,55 +30,58 @@ target 'YourApplicationTests' do
 end
 ```
 
+For information on how to use CocoaPods, please refer to the official CocoaPods documentation.
+
 ## Usage
 
 ### Setup
 
-Before you write your Pact definitions, you have to configure to launch the mock server.
+Before you write your Pact definitions, you have to configure the mock server.
 
-Edit your test scheme and write such a snippet in `Pre-actions` section.
+Edit your test scheme and add the following to the `Pre-actions` section. (You might have to make changes to the PATH setting.)
 
 ```sh
 PATH=$HOME/.rbenv/shims:$PATH
 "$SRCROOT"/Carthage/Checkouts/Phakchi/scripts/start_control_server.sh
 ```
 
-In the same way, you should run `stop_control_server` script post testing.
+And set `Provide build settings from` to your test target.
+
+In the same way, you should run the `stop_control_server` script post testing.
 
 ```sh
 PATH=$HOME/.rbenv/shims:$PATH
 "$SRCROOT"/Carthage/Checkouts/Phakchi/scripts/stop_control_server.sh
 ```
 
-### Describe contracts on XCTest
+### Describe contracts using XCTest
 
 First, Phakchi connects to the control server.
+The control server is able to launch mock servers.
+Launched mock servers are represented as instances of `Session`.
 
-Control server can launch each mock servers.
+Then you need to describe the interactions you are going to have with the mock server.
+Once the interactions are described, you then send a request to the mock server, check that the response is correct, and if your validation passes, a Pact file will be generated.
 
-Launched mock servers are replesented as `Session` instance.
-
-You have to define interactions to the mock server.
-After this, you send request to mock server then it will be verified.
-If validations are passed, Pact files will be generated.
-
-If you would like to write contracts between the API to fetch recipes.  
-Your `RecipeClient` requests to the API in `fetchRecipes(keyword)` method.
-Below is the sample implementation on XCTest.
+Below you will find an example for writing contracts for an API to fetch recipes with XCTest.
+The request to the API is done by `RecipeClient`'s `fetchRecipes(keyword)` method.
 
 ```swift
+import XCTest
+import Phakchi
+
 class RecipeClientPact: XCTestCase {
-    let controlServer: ControlServer = ControlServer()
+    let controlServer: ControlServer = ControlServer.defaultServer
     var session: Session!
 
     override func setUp() {
         super.setUp()
 
-        // Launch mock server
-        let exp = expectationWithDescription("session was started")
-        controlServer.startSession(withConsumerName: "consumer", providerName: "provider") { (session) in
+        // Launch a mock server
+        let expectation = expectationWithDescription("session was started")
+        controlServer.startSession(withConsumerName: "consumer", providerName: "provider") { session in
             self.session = session
-            exp.fulfill()
+            expectation.fulfill()
         }
         waitForExpectationsWithTimeout(5.0, handler: nil)
     }
@@ -85,17 +91,15 @@ class RecipeClientPact: XCTestCase {
         let expectation = expectationWithDescription("contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET, path: "/v1/recipes", query: ["keyword": "Sushi"])
-            .willRespondWith(status: 200, body: Matcher.eachLike(["recipes": ["name": "Tuna", "description", "Delicious"], min: 10]))
+            .willRespondWith(status: 200, body: Matcher.eachLike(["recipes": ["name": "Tuna", "description": "Delicious"]], min: 10))
 
         session.run(completionBlock: { isValid in
             // This block will be executed after completion
             XCTAssertTrue(isValid)
             expectation.fulfill()
-        },
-                    executionBlock: { completeTest in
+        }, executionBlock: { completeTest in
             RecipeClient.fetchRecipes(from: ”Sushi") { (recipes, error) in
-                // Expect to return 10 Sushi objects
+                // Expected to return 10 Sushi objects
                 XCTAssertEqual(recipes.count, 10)
                 XCTAssertNil(error)
                 XCTAssertEqual(recipes[0].name, "Tuna")
@@ -108,15 +112,23 @@ class RecipeClientPact: XCTestCase {
 }
 ```
 
+#### Note
+
+If you get the error below when trying to launch mock servers, you should set `Allow Arbitrary Loads` to `YES` in the `Info.plist` of your application target.
+
+```
+App Transport Security has blocked a cleartext HTTP (http://) resource load since it is insecure. Temporary exceptions can be configured via your app's Info.plist file.
+```
+
 ### Matcher
 
-As described in above example code, You can use helpers to match with Regular Expressions.
+As described in the above example code, you can use helpers to match using regular expressions.
 
 - term
 - like
 - eachLike (Supported in [pact-specification V2](https://github.com/realestate-com-au/pact/wiki/v2-flexible-matching) only)
 
-See detail this [documentation](https://github.com/realestate-com-au/pact/wiki/Regular-expressions-and-type-matching-with-Pact) for detail
+You can have a look at [this documentation](https://github.com/realestate-com-au/pact/wiki/Regular-expressions-and-type-matching-with-Pact) for more details.
 
 ### Requirements
 
