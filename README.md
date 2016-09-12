@@ -120,6 +120,17 @@ class RecipeClientPact: XCTestCase {
         })
         waitForExpectationsWithTimeout(5, handler: nil)
     }
+
+    override func tearDown() {
+        super.tearDown()
+
+        let expectation = expectationWithDescription("Tear down Pact environment")
+        // Clean up all interactions on mock server
+        session.clean {
+            expectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(5, handler: nil)
+    }
 }
 ```
 
