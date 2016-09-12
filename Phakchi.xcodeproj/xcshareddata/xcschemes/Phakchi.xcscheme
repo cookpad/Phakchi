@@ -32,7 +32,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "PATH=$HOME/.rbenv/shims:$PATH&#10;PORT=8080&#10;&quot;$SRCROOT&quot;/scripts/start_control_server.sh">
+               scriptText = "PATH=$HOME/.rbenv/shims:$PATH&#10;PORT=8080&#10;BUNDLE_GEMFILE=&quot;$SRCROOT&quot;/Gemfile bundle exec &quot;$SRCROOT&quot;/scripts/start_control_server.sh">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
@@ -50,7 +50,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "PATH=$HOME/.rbenv/shims:$PATH&#10;&quot;$SRCROOT&quot;/scripts/stop_control_server.sh">
+               scriptText = "PATH=$HOME/.rbenv/shims:$PATH&#10;BUNDLE_GEMFILE=&quot;$SRCROOT&quot;/Gemfile bundle exec &quot;$SRCROOT&quot;/scripts/stop_control_server.sh">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
