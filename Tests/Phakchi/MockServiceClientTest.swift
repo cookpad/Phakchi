@@ -21,7 +21,12 @@ class MockServiceClientTestCase: XCTestCase {
     override func tearDown() {
         super.tearDown()
         self.client.cleanInteractions()
-        self.session.close()
+
+        let expectation = expectationWithDescription("session is closed")
+        self.session.close { _ in
+            expectation.fulfill()
+        }
+        waitForExpectationsWithTimeout(5.0, handler: nil)
     }
 
     func testRegisterInteraction() {
