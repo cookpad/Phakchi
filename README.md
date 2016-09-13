@@ -41,7 +41,7 @@ For information on how to use CocoaPods, please refer to the official CocoaPods 
 
 Before you write your Pact definitions, you have to configure the mock server.
 
-First, add `Gemfile` on project root
+First, add `Gemfile` to project root
 
 ```ruby
 source "https://rubygems.org"
@@ -49,7 +49,7 @@ source "https://rubygems.org"
 gem "pact-mock_service"
 ```
 
-Next, edit your test scheme and add the following to the `Pre-actions` section. (You might have to make changes to the PATH setting.)
+Then, edit your test scheme and add the following to the `Pre-actions` section. (You might have to make changes to the PATH setting.)
 
 ```sh
 PATH=$HOME/.rbenv/shims:$PATH
