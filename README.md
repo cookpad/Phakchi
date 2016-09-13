@@ -1,5 +1,8 @@
-
 # Phakchi
+
+[![Build Status](https://travis-ci.org/cookpad/Phakchi.svg?branch=master)](https://travis-ci.org/cookpad/Phakchi)
+[![Language](https://img.shields.io/badge/language-Swift%202.2%7C2.3-orange.svg)](https://swift.org)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
 
 Pact consumer client library in Swift
 
@@ -38,11 +41,19 @@ For information on how to use CocoaPods, please refer to the official CocoaPods 
 
 Before you write your Pact definitions, you have to configure the mock server.
 
-Edit your test scheme and add the following to the `Pre-actions` section. (You might have to make changes to the PATH setting.)
+First, add `Gemfile` to project root
+
+```ruby
+source "https://rubygems.org"
+
+gem "pact-mock_service"
+```
+
+Then, edit your test scheme and add the following to the `Pre-actions` section. (You might have to make changes to the PATH setting.)
 
 ```sh
 PATH=$HOME/.rbenv/shims:$PATH
-"$SRCROOT"/Carthage/Checkouts/Phakchi/scripts/start_control_server.sh
+BUNDLE_GEMFILE="$SRCROOT"/Gemfile bundle exec "$SRCROOT"/Carthage/Checkouts/Phakchi/scripts/start_control_server.sh
 ```
 
 And set `Provide build settings from` to your test target.
@@ -51,7 +62,7 @@ In the same way, you should run the `stop_control_server` script post testing.
 
 ```sh
 PATH=$HOME/.rbenv/shims:$PATH
-"$SRCROOT"/Carthage/Checkouts/Phakchi/scripts/stop_control_server.sh
+BUNDLE_GEMFILE="$SRCROOT"/Gemfile bundle exec "$SRCROOT"/Carthage/Checkouts/Phakchi/scripts/stop_control_server.sh
 ```
 
 ### Describe contracts using XCTest
@@ -107,6 +118,17 @@ class RecipeClientPact: XCTestCase {
                 completeTest() // Tell completion to the mock server
             }
         })
+        waitForExpectationsWithTimeout(5, handler: nil)
+    }
+
+    override func tearDown() {
+        super.tearDown()
+
+        let expectation = expectationWithDescription("Tear down Pact environment")
+        // Clean up all interactions on mock server
+        session.clean {
+            expectation.fulfill()
+        }
         waitForExpectationsWithTimeout(5, handler: nil)
     }
 }
