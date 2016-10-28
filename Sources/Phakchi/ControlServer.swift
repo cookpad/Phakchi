@@ -6,7 +6,7 @@ public class ControlServer {
     private(set) var sessions: [Session] = []
     private let mockServiceClient = ControlServiceClient()
 
-    open func startSession(withConsumerName consumerName: String,
+    public func startSession(withConsumerName consumerName: String,
                            providerName: String,
                            completionBlock: StartSessionCompletionBlock? = nil) {
         mockServiceClient.startSession(withConsumerName: consumerName,
@@ -18,7 +18,7 @@ public class ControlServer {
         }
     }
 
-    open func session(forConsumerName consumerName: String,
+    public func session(forConsumerName consumerName: String,
                       providerName: String) -> Session? {
         return sessions.filter { session in
             session.consumerName == consumerName &&
