@@ -1,7 +1,7 @@
 import Foundation
 
 public class Session {
-    public typealias TestExecutionBlock = ((Void) -> Void) -> Void
+    public typealias TestExecutionBlock = (@escaping (Void) -> Void) -> Void
     public typealias TestCompletionBlock = (Bool) -> Void
     public typealias CleanCompletionBlock = (Void) -> Void
     public typealias CloseCompletionBlock = (Void) -> Void

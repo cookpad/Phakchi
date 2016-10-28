@@ -16,12 +16,7 @@ class IntegrateTestCase: XCTestCase {
     }
 
     func makeRequestURL(forEndpoint endpoint: String) -> URL {
-        #if swift(>=2.3)
-            guard let requestURL = session.baseURL.URLByAppendingPathComponent(endpoint) else { fatalError("Invalid endpoint \(endpoint)") }
-            return requestURL
-        #else
-            return session.baseURL.URLByAppendingPathComponent(endpoint)
-        #endif
+        return session.baseURL.appendingPathComponent(endpoint)
     }
 
     func testSetExportPath() {
@@ -29,8 +24,8 @@ class IntegrateTestCase: XCTestCase {
     }
 
     func testSingleton() {
-        let server0 = ControlServer.defaultServer
-        let server1 = ControlServer.defaultServer
+        let server0 = ControlServer.default
+        let server1 = ControlServer.default
         let server2 = ControlServer()
         XCTAssert(server0 === server1)
         XCTAssert(server0 !== server2)
@@ -45,9 +40,9 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithInvalid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET, path: "/v1/recipes")
+            .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid) in
@@ -55,7 +50,7 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            completeTest()
+                        completeTest()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -63,9 +58,9 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithValid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET, path: "/v1/recipes")
+            .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -73,14 +68,14 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
-            let request = NSMutableURLRequest(URL: requestURL)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-                }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
+                        var request = URLRequest(url: requestURL)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -88,12 +83,12 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithHeaderUsingMatcher() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET, path: "/v1/recipes")
+            .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200,
                              headers: ["Content-Type" : Matcher.term(generate: "application/json",
-                                                                      matcher: "application/json")],
+                                                                     matcher: "application/json")],
                              body: nil)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -101,14 +96,14 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
-            let request = NSMutableURLRequest(URL: requestURL)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-                }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
+                        var request = URLRequest(url: requestURL)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -118,12 +113,12 @@ class IntegrateTestCase: XCTestCase {
         let expectation = self.expectation(description: "contract is valid")
 
         let path = Matcher.like("/v1/recipes")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET, path: path)
+            .with(method: .get, path: path)
             .willRespondWith(status: 200,
                              headers: ["Content-Type" : Matcher.term(generate: "application/json",
-                                matcher: "application/json")],
+                                                                     matcher: "application/json")],
                              body: nil)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -131,14 +126,14 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
-            let request = NSMutableURLRequest(URL: requestURL)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-            }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
+                        var request = URLRequest(url: requestURL)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -146,27 +141,27 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithQuery() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET,
-                path: "/v1/recipes",
-                query: ["keyword": "carrot"])
+            .with(method: .get,
+                  path: "/v1/recipes",
+                  query: ["keyword": "carrot"])
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
             expectation.fulfill()
         }, executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let components = NSURLComponents(URL: self.session.baseURL, resolvingAgainstBaseURL: false)!
+            let configuration = URLSessionConfiguration.default
+            let session = URLSession(configuration: configuration)
+            var components = URLComponents(url: self.session.baseURL, resolvingAgainstBaseURL: false)!
             components.path = "/v1/recipes"
             components.query = "keyword=carrot"
-            let request = NSMutableURLRequest(URL: components.URL!)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
+            var request = URLRequest(url: components.url!)
+            request.httpMethod = HTTPMethod.get.rawValue
+            session.dataTask(with: request) { (data, response, error) in
                 completeTest()
-            }.resume()
+                }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -174,11 +169,11 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithTerm() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET,
-                path: "/v1/recipes",
-                query: ["keyword" : Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
+            .with(method: .get,
+                  path: "/v1/recipes",
+                  query: ["keyword" : Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -186,16 +181,16 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let components = NSURLComponents(URL: self.session.baseURL, resolvingAgainstBaseURL: false)!
-            components.path = "/v1/recipes"
-            components.query = "keyword=eggplant" // should be match
-            let request = NSMutableURLRequest(URL: components.URL!)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-            }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        var components = URLComponents(url: self.session.baseURL, resolvingAgainstBaseURL: false)!
+                        components.path = "/v1/recipes"
+                        components.query = "keyword=eggplant" // should be match
+                        var request = URLRequest(url: components.url!)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -210,11 +205,11 @@ class IntegrateTestCase: XCTestCase {
             "Content-Type" : "application/json"
         ]
 
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET,
-                path: "/v1/recipes",
-                query: ["keyword" : Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
+            .with(method: .get,
+                  path: "/v1/recipes",
+                  query: ["keyword" : Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -222,17 +217,17 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let components = NSURLComponents(URL: self.session.baseURL, resolvingAgainstBaseURL: false)!
-            components.path = "/v1/recipes"
-            components.query = "keyword=eggplant" // should be match
-            let request = NSMutableURLRequest(URL: components.URL!)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            request.addValue("authtoken", forHTTPHeaderField: "Auth")
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-            }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        var components = URLComponents(url: self.session.baseURL, resolvingAgainstBaseURL: false)!
+                        components.path = "/v1/recipes"
+                        components.query = "keyword=eggplant" // should be match
+                        var request = URLRequest(url: components.url!)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        request.addValue("authtoken", forHTTPHeaderField: "Auth")
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -240,11 +235,11 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET,
-                path: "/v1/recipes",
-                query: ["keyword": Matcher.like("carrot")])
+            .with(method: .get,
+                  path: "/v1/recipes",
+                  query: ["keyword": Matcher.like("carrot")])
             .willRespondWith(status: 200,
                              headers: ["Content-Type": "application/json"],
                              body: ["count": Matcher.like(10)])
@@ -254,16 +249,16 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let components = NSURLComponents(URL: self.session.baseURL, resolvingAgainstBaseURL: false)!
-            components.path = "/v1/recipes"
-            components.query = "keyword=eggplant" // should be match
-            let request = NSMutableURLRequest(URL: components.URL!)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-            }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        var components = URLComponents(url: self.session.baseURL, resolvingAgainstBaseURL: false)!
+                        components.path = "/v1/recipes"
+                        components.query = "keyword=eggplant" // should be match
+                        var request = URLRequest(url: components.url!)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -271,10 +266,10 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithEachLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET,
-                path: "/v1/recipes")
+            .with(method: .get,
+                  path: "/v1/recipes")
             .willRespondWith(status: 200,
                              headers: ["Content-Type": "application/json"],
                              body: Matcher.eachLike([
@@ -286,15 +281,15 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let components = NSURLComponents(URL: self.session.baseURL, resolvingAgainstBaseURL: false)!
-            components.path = "/v1/recipes"
-            let request = NSMutableURLRequest(URL: components.URL!)
-            request.HTTPMethod = HTTPMethod.GET.rawValue
-            session.dataTaskWithRequest(request) { (data, response, error) in
-                completeTest()
-            }.resume()
+                        let configuration = URLSessionConfiguration.default
+                        let session = URLSession(configuration: configuration)
+                        var components = URLComponents(url: self.session.baseURL, resolvingAgainstBaseURL: false)!
+                        components.path = "/v1/recipes"
+                        var request = URLRequest(url: components.url!)
+                        request.httpMethod = HTTPMethod.get.rawValue
+                        session.dataTask(with: request) { (data, response, error) in
+                            completeTest()
+                            }.resume()
         })
         waitForExpectations(timeout: 5, handler: nil)
     }
@@ -312,9 +307,9 @@ class IntegrateTestCase: XCTestCase {
     func testCleanSession() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        session.given("There are 2 recipes")
+        _ = session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
-            .with(method: .GET, path: "/v1/recipes")
+            .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid) in
@@ -322,12 +317,12 @@ class IntegrateTestCase: XCTestCase {
             expectation.fulfill()
         },
                     executionBlock: { (completeTest) in
-            completeTest()
+                        completeTest()
         })
         waitForExpectations(timeout: 5, handler: nil)
-
+        
         XCTAssertEqual(session.interactions.count, 1)
-
+        
         let cleanUpExpectation = self.expectation(description: "interactions are cleaned")
         session.clean {
             XCTAssertEqual(self.session.interactions.count, 0)
@@ -335,12 +330,12 @@ class IntegrateTestCase: XCTestCase {
         }
         waitForExpectations(timeout: 5, handler: nil)
     }
-
+    
     override func tearDown() {
         super.tearDown()
-
+        
         let expectation = self.expectation(description: "session is closed")
-
+        
         // workaround to pass test on CI
         let delayTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: delayTime) {
@@ -350,5 +345,5 @@ class IntegrateTestCase: XCTestCase {
         }
         waitForExpectations(timeout: 5.0, handler: nil)
     }
-
+    
 }

@@ -37,7 +37,7 @@ class MockServiceClientTestCase: XCTestCase {
 
     func testRegisterInteraction() {
         let expectation = self.expectation(description: "interactions are registered")
-        let request = Interaction.Request(method: .GET, path: "/integrates/", query: nil, headers: nil, body: nil)
+        let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
@@ -51,7 +51,7 @@ class MockServiceClientTestCase: XCTestCase {
 
     func testRegisterInteractions() {
         let expectation = self.expectation(description: "interactions are registered")
-        let request = Interaction.Request(method: .GET, path: "/integrates/", query: nil, headers: nil, body: nil)
+        let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction0 = Interaction(description: "Get integrates", providerState: "", request: request, response: response)
         let interaction1 = Interaction(description: "Get integrates", providerState: "", request: request, response: response)
@@ -66,7 +66,7 @@ class MockServiceClientTestCase: XCTestCase {
 
     func testVerify() {
         let expectation = self.expectation(description: "contract is valid")
-        let request = Interaction.Request(method: .GET, path: "/integrates/", query: nil, headers: nil, body: nil)
+        let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
@@ -81,13 +81,13 @@ class MockServiceClientTestCase: XCTestCase {
 
     func testVerifyInMainThread() {
         let expectation = self.expectation(description: "contract is valid")
-        let request = Interaction.Request(method: .GET, path: "/integrates/", query: nil, headers: nil, body: nil)
+        let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
         self.client.registerInteraction(interaction) { (data, response, error) in
             self.client.verify { (result) in
-                XCTAssertTrue(NSThread.isMainThread())
+                XCTAssertTrue(Thread.isMainThread)
                 expectation.fulfill()
             }
         }
@@ -96,16 +96,15 @@ class MockServiceClientTestCase: XCTestCase {
 
     func testVerifyWithValidRequest() {
         let expectation = self.expectation(description: "contract is valid")
-        let request = Interaction.Request(method: .GET, path: "/integrates/", query: nil, headers: nil, body: nil)
+        let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
         self.client.registerInteraction(interaction) { (data, response, error) in
-            let request = NSMutableURLRequest()
-            request.URL = self.session.baseURL.URLByAppendingPathComponent("/integrates/")
-            let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-            let session = NSURLSession(configuration: configuration)
-            let task = session.dataTaskWithRequest(request) { (data, response, error) in
+            let request = URLRequest(url: self.session.baseURL.appendingPathComponent("/integrates/"))
+            let configuration = URLSessionConfiguration.default
+            let session = URLSession(configuration: configuration)
+            let task = session.dataTask(with: request) { (data, response, error) in
                 self.client.verify { (result) in
                     XCTAssertTrue(result)
                     expectation.fulfill()
@@ -118,7 +117,7 @@ class MockServiceClientTestCase: XCTestCase {
 
     func testClearInteractions() {
         let expectation = self.expectation(description: "interactions are cleaned")
-        let request = Interaction.Request(method: .GET, path: "/integrates/", query: nil, headers: nil, body: nil)
+        let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 

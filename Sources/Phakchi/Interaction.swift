@@ -16,7 +16,7 @@ struct Interaction: PactEncodable {
 
         var pactJSON: Any {
             var JSON = [
-                "method": method.rawValue,
+                "method": method.rawValue.uppercased(),
                 "path": path.pactJSON,
             ]
             if let body = body {

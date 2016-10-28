@@ -39,9 +39,9 @@ extension String: PactEncodable {
     }
 }
 
-extension Array where Element: AnyObject {
+extension Array where Element: PactEncodable {
     public var pactJSON: Any {
-        return self as Any
+        return self.map { $0.pactJSON } as Any
     }
 }
 
