@@ -14,19 +14,19 @@ struct Interaction: PactEncodable {
         var headers: Headers?
         var body: Body?
 
-        var pactJSON: Any {
+        var pactJSON: PactEncodable {
             var JSON = [
                 "method": method.rawValue.uppercased(),
                 "path": path.pactJSON,
             ]
             if let body = body {
-                JSON["body"] = body
+                JSON["body"] = body.pactJSON
             }
             if let headers = headers {
-                JSON["headers"] = headers
+                JSON["headers"] = headers.pactJSON
             }
             if let query = query {
-                JSON["query"] = query
+                JSON["query"] = query.pactJSON
             }
             return JSON
         }
@@ -37,13 +37,13 @@ struct Interaction: PactEncodable {
         let headers: Headers?
         let body: Body?
 
-        var pactJSON: Any {
+        var pactJSON: PactEncodable {
             var JSON: JSONObject = ["status": status]
             if let headers = headers {
-                JSON["headers"] = headers
+                JSON["headers"] = headers.pactJSON
             }
             if let body = body {
-                JSON["body"] = body
+                JSON["body"] = body.pactJSON
             }
             return JSON
         }
@@ -54,7 +54,7 @@ struct Interaction: PactEncodable {
     var request: Request
     var response: Response
 
-    var pactJSON: Any {
+    var pactJSON: PactEncodable {
         var param: JSONObject = [
             "description": description,
             "request": request.pactJSON,

@@ -1,9 +1,9 @@
 import Foundation
 
-typealias JSONObject = [String: Any]
+typealias JSONObject = [String: PactEncodable]
 
 public protocol PactEncodable {
-    var pactJSON: Any { get }
+    var pactJSON: PactEncodable { get }
 }
 
 extension PactEncodable {
@@ -16,37 +16,48 @@ extension PactEncodable {
 }
 
 extension Int: PactEncodable {
-    public var pactJSON: Any {
+    public var pactJSON: PactEncodable {
         return self
     }
 }
 
 extension Double: PactEncodable {
-    public var pactJSON: Any {
+    public var pactJSON: PactEncodable {
         return self
     }
 }
 
 extension Bool: PactEncodable {
-    public var pactJSON: Any {
+    public var pactJSON: PactEncodable {
         return self
     }
 }
 
 extension String: PactEncodable {
-    public var pactJSON: Any {
-        return self as Any
+    public var pactJSON: PactEncodable {
+        return self as PactEncodable
     }
 }
 
-extension Array where Element: PactEncodable {
-    public var pactJSON: Any {
-        return self.map { $0.pactJSON } as Any
+extension Array: PactEncodable {
+    public var pactJSON: PactEncodable {
+        return self.flatMap { element -> PactEncodable? in
+            if let element = element as? PactEncodable {
+                return element.pactJSON
+            }
+            return nil
+        }
     }
 }
 
 extension Dictionary: PactEncodable {
-    public var pactJSON: Any {
-        return self as Any
+    public var pactJSON: PactEncodable {
+        var jsonObject: [Key: PactEncodable] = [:]
+        for (key, value) in self {
+            if let value = value as? PactEncodable {
+                jsonObject[key] = value.pactJSON
+            }
+        }
+        return jsonObject
     }
 }

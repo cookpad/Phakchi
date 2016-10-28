@@ -4,7 +4,7 @@ struct TermMatcher: PactEncodable {
     let valueForGeneration: String
     let pattern: String
 
-    var pactJSON: Any {
+    var pactJSON: PactEncodable {
         return [
             "json_class": "Pact::Term",
             "data": [
@@ -22,7 +22,7 @@ struct TermMatcher: PactEncodable {
 struct LikeMatcher<T: PactEncodable>: PactEncodable {
     let value: T
 
-    var pactJSON: Any {
+    var pactJSON: PactEncodable {
         return [
             "json_class": "Pact::SomethingLike",
             "contents": value.pactJSON,
@@ -34,7 +34,7 @@ struct EachLikeMatcher<T: PactEncodable>: PactEncodable {
     let value: T
     let minimumCount: Int
 
-    var pactJSON: Any {
+    var pactJSON: PactEncodable {
         return [
             "json_class": "Pact::ArrayLike",
             "contents": value.pactJSON,

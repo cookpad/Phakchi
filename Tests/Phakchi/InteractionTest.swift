@@ -31,7 +31,7 @@ class InteractionTestCase: XCTestCase {
 
     func testResponseWithBody() {
         let response = Interaction.Response(status: 200, headers: nil, body: ["message": "success"])
-        let params = response.pactJSON as! [String: AnyObject]
+        let params = response.pactJSON as! JSONObject
         XCTAssertEqual(params["status"] as? Int, 200)
         XCTAssertNil(params["headers"])
         XCTAssertNotNil(params["body"])

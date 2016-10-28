@@ -52,7 +52,7 @@ struct MockServiceClient: BaseServiceClient {
     }
 
     func registerInteractions(_ interactions: [Interaction], completionHandler: CompletionHandler? = nil) {
-        let params: [String: PactEncodable] = ["interactions" : interactions.map { $0.pactJSON } as! PactEncodable]
+        let params = ["interactions" : interactions.map { $0.pactJSON }]
 
         let JSONData = params.JSONData
         let request = buildPactRequest(to: "interactions", method: .put) { (request) in
