@@ -9,7 +9,7 @@ class InteractionBuilderTestCase: XCTestCase {
         self.builder = InteractionBuilder()
     }
 
-    private func buildInteractionWithRequestHeaders(headers: Headers?) -> Interaction! {
+    fileprivate func buildInteractionWithRequestHeaders(_ headers: Headers?) -> Interaction! {
         self.builder.uponReceiving("Hello")
             .with(.GET, path: "/integrates",
                 query: nil, headers:
@@ -19,7 +19,7 @@ class InteractionBuilderTestCase: XCTestCase {
         return self.builder.buildInteraction()
     }
 
-    private func buildInteractionWithResponseHeaders(headers: Headers?) -> Interaction! {
+    fileprivate func buildInteractionWithResponseHeaders(_ headers: Headers?) -> Interaction! {
         self.builder.uponReceiving("Hello")
             .with(.GET, path: "/integrates")
             .willRespondWith(200, headers: headers, body: nil)

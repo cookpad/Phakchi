@@ -7,15 +7,15 @@ class IntegrateTestCase: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        let exp = expectationWithDescription("session was started")
+        let exp = expectation(description: "session was started")
         controlServer.startSession(withConsumerName: "consumer", providerName: "provider") { (session) in
             self.session = session
             exp.fulfill()
         }
-        waitForExpectationsWithTimeout(5.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
     }
 
-    func makeRequestURL(forEndpoint endpoint: String) -> NSURL {
+    func makeRequestURL(forEndpoint endpoint: String) -> URL {
         #if swift(>=2.3)
             guard let requestURL = session.baseURL.URLByAppendingPathComponent(endpoint) else { fatalError("Invalid endpoint \(endpoint)") }
             return requestURL
@@ -25,7 +25,7 @@ class IntegrateTestCase: XCTestCase {
     }
 
     func testSetExportPath() {
-        self.session.exportPath = NSURL(fileURLWithPath: "./tmp/pacts/foo/bar")
+        self.session.exportPath = URL(fileURLWithPath: "./tmp/pacts/foo/bar")
     }
 
     func testSingleton() {
@@ -44,7 +44,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithInvalid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET, path: "/v1/recipes")
@@ -57,12 +57,12 @@ class IntegrateTestCase: XCTestCase {
                     executionBlock: { (completeTest) in
             completeTest()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithValid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET, path: "/v1/recipes")
@@ -82,12 +82,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
                 }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithHeaderUsingMatcher() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET, path: "/v1/recipes")
@@ -110,12 +110,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
                 }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithPathUsingMatcher() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
 
         let path = Matcher.like("/v1/recipes")
         session.given("There are 2 recipes")
@@ -140,12 +140,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
             }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithQuery() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET,
@@ -168,12 +168,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
             }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithTerm() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET,
@@ -197,12 +197,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
             }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithDefaultRequestAndResponseHeader() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.defaultRequestHeader = [
             "Auth" : "authtoken"
         ]
@@ -234,12 +234,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
             }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET,
@@ -265,12 +265,12 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
             }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testMockServiceRunWithEachLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET,
@@ -296,22 +296,22 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
             }.resume()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testCloseSession() {
-        let expectation = expectationWithDescription("session is closed")
+        let expectation = self.expectation(description: "session is closed")
         XCTAssertTrue(session.isOpen)
         session.close {
             XCTAssertFalse(self.session.isOpen)
             expectation.fulfill()
         }
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     func testCleanSession() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = expectationWithDescription("contract is valid")
+        let expectation = self.expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .GET, path: "/v1/recipes")
@@ -324,31 +324,31 @@ class IntegrateTestCase: XCTestCase {
                     executionBlock: { (completeTest) in
             completeTest()
         })
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
 
         XCTAssertEqual(session.interactions.count, 1)
 
-        let cleanUpExpectation = expectationWithDescription("interactions are cleaned")
+        let cleanUpExpectation = self.expectation(description: "interactions are cleaned")
         session.clean {
             XCTAssertEqual(self.session.interactions.count, 0)
             cleanUpExpectation.fulfill()
         }
-        waitForExpectationsWithTimeout(5, handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
     override func tearDown() {
         super.tearDown()
 
-        let expectation = expectationWithDescription("session is closed")
+        let expectation = self.expectation(description: "session is closed")
 
         // workaround to pass test on CI
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) {
+        let delayTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: delayTime) {
             self.session.close {
                 expectation.fulfill()
             }
         }
-        waitForExpectationsWithTimeout(5.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
     }
 
 }

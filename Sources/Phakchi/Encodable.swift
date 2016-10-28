@@ -1,14 +1,14 @@
 import Foundation
 
-typealias JSONObject = [String: AnyObject]
+typealias JSONObject = [String: Any]
 
 public protocol PactEncodable {
-    var pactJSON: AnyObject { get }
+    var pactJSON: Any { get }
 }
 
 extension PactEncodable {
-    var JSONData: NSData {
-        if let data = try? NSJSONSerialization.dataWithJSONObject(pactJSON, options: []) {
+    var JSONData: Data {
+        if let data = try? JSONSerialization.data(withJSONObject: pactJSON, options: []) {
             return data
         }
         fatalError("Could not deserialize JSON")
@@ -16,37 +16,37 @@ extension PactEncodable {
 }
 
 extension Int: PactEncodable {
-    public var pactJSON: AnyObject {
+    public var pactJSON: Any {
         return self
     }
 }
 
 extension Double: PactEncodable {
-    public var pactJSON: AnyObject {
+    public var pactJSON: Any {
         return self
     }
 }
 
 extension Bool: PactEncodable {
-    public var pactJSON: AnyObject {
+    public var pactJSON: Any {
         return self
     }
 }
 
 extension String: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self
+    public var pactJSON: Any {
+        return self as Any
     }
 }
 
 extension Array where Element: AnyObject {
-    public var pactJSON: AnyObject {
-        return self
+    public var pactJSON: Any {
+        return self as Any
     }
 }
 
 extension Dictionary: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self as! AnyObject
+    public var pactJSON: Any {
+        return self as Any
     }
 }
