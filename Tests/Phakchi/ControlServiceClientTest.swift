@@ -11,7 +11,7 @@ class ControlServiceClientTestCase: XCTestCase {
 
     func testStart() {
         var session: Session!
-        let exp = expectation(description: "session was started")
+        let expectationToStart = expectation(description: "session was started")
         let controlServiceClient = ControlServiceClient()
         controlServiceClient.start(session: "consumer name",
                                    providerName: "provider name") { (newSession) in
@@ -19,9 +19,9 @@ class ControlServiceClientTestCase: XCTestCase {
                                     XCTAssertEqual(session.consumerName, "consumer name")
                                     XCTAssertEqual(session.providerName, "provider name")
                                     XCTAssertNotNil(session)
-                                    exp.fulfill()
+                                    expectationToStart.fulfill()
         }
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 15.0, handler: nil)
     }
     
 }
