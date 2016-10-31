@@ -58,13 +58,12 @@ public class Session {
         return self
     }
 
-    public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) -> Self {
+    public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) {
         _ = builder.willRespondWith(status, headers: headers, body: body)
         if let interaction = builder.buildInteraction() {
             interactions.append(interaction)
             builder.clean()
         }
-        return self
     }
 
     public func run(completionBlock: TestCompletionBlock? = nil, executionBlock: @escaping TestExecutionBlock) {
