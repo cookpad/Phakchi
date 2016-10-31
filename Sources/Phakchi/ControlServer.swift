@@ -3,7 +3,11 @@ import Foundation
 public class ControlServer {
     public static let `default` = ControlServer()
     public typealias StartSessionCompletionBlock = (Session?) -> Void
-    private(set) var sessions: [Session] = []
+    // want to make concealed setter from external
+    private var _sessions: [Session] = []
+    public var sessions: [Session] {
+        return _sessions
+    }
     private let mockServiceClient = ControlServiceClient()
 
     public func startSession(withConsumerName consumerName: String,
@@ -12,7 +16,7 @@ public class ControlServer {
         mockServiceClient.startSession(withConsumerName: consumerName,
                                        providerName: providerName) { session in
                                         if let session = session {
-                                            self.sessions.append(session)
+                                            self._sessions.append(session)
                                         }
                                         completionBlock?(session)
         }
