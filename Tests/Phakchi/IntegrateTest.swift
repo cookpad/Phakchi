@@ -8,7 +8,7 @@ class IntegrateTestCase: XCTestCase {
     override func setUp() {
         super.setUp()
         let exp = expectation(description: "session was started")
-        controlServer.startSession(withConsumerName: "consumer", providerName: "provider") { (session) in
+        controlServer.start(session: "consumer", providerName: "provider") { session in
             self.session = session
             exp.fulfill()
         }

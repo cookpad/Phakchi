@@ -96,7 +96,7 @@ struct MockServiceClient: BaseServiceClient {
         resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 
-    func closeSession(_ completionHandler: CompletionHandler? = nil) {
+    func close(handler completionHandler: CompletionHandler? = nil) {
         let request = buildPactRequest(to: "session", method: .delete)
         resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
@@ -116,17 +116,17 @@ struct ControlServiceClient: BaseServiceClient {
         self.baseURL = baseURL
     }
 
-    private func buildStartMockServerHeader(for consumerName: String, providerName: String) -> [String: String] {
+    private func buildMockServerHeader(for consumerName: String, providerName: String) -> [String: String] {
         return [
             "X-Pact-Consumer" : consumerName,
             "X-Pact-Provider" : providerName,
         ]
     }
 
-    func startSession(withConsumerName consumerName: String, providerName: String, completionHandler: @escaping CreateSessionCompletionHandler) {
+    func start(session consumerName: String, providerName: String, completionHandler: @escaping CreateSessionCompletionHandler) {
         let request = buildPactRequest(to: "",
                                        method: .post,
-                                       headers: buildStartMockServerHeader(for: consumerName, providerName: providerName))
+                                       headers: buildMockServerHeader(for: consumerName, providerName: providerName))
         resumeSessionTask(request as URLRequest) { (data, response, error) in
             if let response = response,
                 let location = response.allHeaderFields["X-Pact-Mock-Service-Location"] as? String,

@@ -99,7 +99,7 @@ public class Session {
     }
 
     public func close(_ completionBlock: CloseCompletionBlock? = nil) {
-        mockServiceClient.closeSession { (data, response, error) in
+        mockServiceClient.close { (data, response, error) in
             self.isOpen = false
             completionBlock?()
         }

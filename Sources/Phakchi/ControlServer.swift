@@ -10,20 +10,27 @@ public class ControlServer {
     }
     private let mockServiceClient = ControlServiceClient()
 
+    @available(*, renamed: "start(session:providerName:completion:)")
     public func startSession(withConsumerName consumerName: String,
-                           providerName: String,
-                           completionBlock: StartSessionCompletionBlock? = nil) {
-        mockServiceClient.startSession(withConsumerName: consumerName,
-                                       providerName: providerName) { session in
-                                        if let session = session {
-                                            self._sessions.append(session)
-                                        }
-                                        completionBlock?(session)
+                             providerName: String,
+                             completionBlock: StartSessionCompletionBlock? = nil) {
+        fatalError()
+    }
+
+    public func start(session consumerName: String,
+                      providerName: String,
+                      completion completionBlock: StartSessionCompletionBlock? = nil) {
+        mockServiceClient.start(session: consumerName,
+                                providerName: providerName) { session in
+                                    if let session = session {
+                                        self._sessions.append(session)
+                                    }
+                                    completionBlock?(session)
         }
     }
 
     public func session(forConsumerName consumerName: String,
-                      providerName: String) -> Session? {
+                        providerName: String) -> Session? {
         return sessions.filter { session in
             session.consumerName == consumerName &&
                 session.providerName == providerName

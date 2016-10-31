@@ -9,11 +9,11 @@ class MockServiceClientTestCase: XCTestCase {
         super.setUp()
         let exp = expectation(description: "session is started")
         let controlServiceClient = ControlServiceClient()
-        controlServiceClient.startSession(withConsumerName: "consumer name",
-                                          providerName: "provider name") { (session) in
-                                            self.session = session
-                                            self.client = MockServiceClient(baseURL: self.session.baseURL)
-                                            exp.fulfill()
+        controlServiceClient.start(session: "consumer name",
+                                   providerName: "provider name") { (session) in
+                                    self.session = session
+                                    self.client = MockServiceClient(baseURL: self.session.baseURL)
+                                    exp.fulfill()
         }
         waitForExpectations(timeout: 5.0, handler: nil)
     }
