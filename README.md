@@ -122,14 +122,14 @@ class SamplePact: XCTestCase {
     }
 
     override func tearDown() {
-        super.tearDown()
-
         let expectationToClean = expectation(description: "Tear down Pact environment")
         // Clean up all interactions on mock server
         session.clean {
             expectationToClean.fulfill()
         }
         waitForExpectations(timeout: 5.0, handler: nil)
+
+        super.tearDown()
     }
 }
 ```
