@@ -8,7 +8,10 @@ public class Session {
 
     public let consumerName: String
     public let providerName: String
-    public fileprivate(set) var isOpen: Bool
+    private var _isOpen = false
+    public var isOpen: Bool {
+        return _isOpen
+    }
     public var baseURL: URL {
         get {
             return mockServiceClient.baseURL as URL
@@ -40,7 +43,7 @@ public class Session {
         self.consumerName = consumerName
         self.providerName = providerName
         self.mockServiceClient = MockServiceClient(baseURL: baseURL)
-        self.isOpen = true
+        self._isOpen = true
     }
 
     public func given(_ providerState: String) -> Self {
@@ -99,7 +102,7 @@ public class Session {
 
     public func close(_ completionBlock: CloseCompletionBlock? = nil) {
         mockServiceClient.close { (data, response, error) in
-            self.isOpen = false
+            self._isOpen = false
             completionBlock?()
         }
     }

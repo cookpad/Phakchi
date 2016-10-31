@@ -10,14 +10,14 @@ public class ControlServer {
     }
     private let mockServiceClient = ControlServiceClient()
 
-    @available(*, renamed: "start(session:providerName:completion:)")
+    @available(*, renamed: "startSession(consumerName:providerName:completion:)")
     public func startSession(withConsumerName consumerName: String,
                              providerName: String,
                              completionBlock: StartSessionCompletionBlock? = nil) {
         fatalError()
     }
 
-    public func start(session consumerName: String,
+    public func startSession(consumerName: String,
                       providerName: String,
                       completion completionBlock: StartSessionCompletionBlock? = nil) {
         mockServiceClient.start(session: consumerName,

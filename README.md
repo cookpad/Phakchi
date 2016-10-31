@@ -90,7 +90,7 @@ class SamplePact: XCTestCase {
 
         // Launch a mock server
         let expectationToStart = expectation(description: "session was started")
-        controlServer.startSession(withConsumerName: "consumer", providerName: "provider") { session in
+        controlServer.startSession(consumerName: "consumer", providerName: "provider") { session in
             self.session = session
             expectationToStart.fulfill()
         }

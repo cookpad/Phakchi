@@ -41,7 +41,7 @@ extension String: PactEncodable {
 
 extension Array: PactEncodable {
     public var pactJSON: PactEncodable {
-        return self.flatMap { element -> PactEncodable? in
+        return flatMap { element -> PactEncodable? in
             if let element = element as? PactEncodable {
                 return element.pactJSON
             }
