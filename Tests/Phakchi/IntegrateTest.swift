@@ -320,9 +320,9 @@ class IntegrateTestCase: XCTestCase {
                         completeTest()
         })
         waitForExpectations(timeout: 5, handler: nil)
-        
+
         XCTAssertEqual(session.interactions.count, 1)
-        
+
         let cleanUpExpectation = self.expectation(description: "interactions are cleaned")
         session.clean {
             XCTAssertEqual(self.session.interactions.count, 0)
@@ -330,12 +330,12 @@ class IntegrateTestCase: XCTestCase {
         }
         waitForExpectations(timeout: 5, handler: nil)
     }
-    
+
     override func tearDown() {
         super.tearDown()
-        
+
         let expectation = self.expectation(description: "session is closed")
-        
+
         // workaround to pass test on CI
         let delayTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: delayTime) {
@@ -345,5 +345,5 @@ class IntegrateTestCase: XCTestCase {
         }
         waitForExpectations(timeout: 5.0, handler: nil)
     }
-    
+
 }

@@ -14,14 +14,14 @@ class ControlServiceClientTestCase: XCTestCase {
         let expectationToStart = expectation(description: "session was started")
         let controlServiceClient = ControlServiceClient()
         controlServiceClient.start(session: "consumer name",
-                                   providerName: "provider name") { (newSession) in
+                                   providerName: "provider name") { newSession in
                                     session = newSession
                                     XCTAssertEqual(session.consumerName, "consumer name")
                                     XCTAssertEqual(session.providerName, "provider name")
                                     XCTAssertNotNil(session)
                                     expectationToStart.fulfill()
         }
-        waitForExpectations(timeout: 15.0, handler: nil)
+        waitForExpectations(timeout: 5.0, handler: nil)
     }
-    
+
 }
