@@ -23,13 +23,8 @@ class MockServiceClientTestCase: XCTestCase {
         self.client.cleanInteractions()
 
         let expectation = self.expectation(description: "session is closed")
-
-        // workaround to pass test on CI
-        let delayTime = DispatchTime.now() + Double(Int64(1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: delayTime) {
-            self.session.close { _ in
-                expectation.fulfill()
-            }
+        self.session.close { _ in
+            expectation.fulfill()
         }
 
         waitForExpectations(timeout: 5.0, handler: nil)
