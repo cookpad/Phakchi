@@ -63,7 +63,7 @@ public class Session {
 
     public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) {
         _ = builder.willRespondWith(status, headers: headers, body: body)
-        if let interaction = builder.buildInteraction() {
+        if let interaction = builder.makeInteraction() {
             interactions.append(interaction)
             builder.clean()
         }
@@ -80,9 +80,9 @@ public class Session {
                 self.mockServiceClient.verify { (isValid) in
                     if isValid {
                         self.mockServiceClient.writePact(for: self.providerName,
-                                                consumerName: self.consumerName,
-                                                  exportPath: self.exportPath) { (data, response, error) in
-                                                      completionBlock?(isValid)
+                                                         consumerName: self.consumerName,
+                                                         exportPath: self.exportPath) { (data, response, error) in
+                                                            completionBlock?(isValid)
                         }
                     } else {
                         completionBlock?(isValid)

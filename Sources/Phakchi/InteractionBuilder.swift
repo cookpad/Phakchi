@@ -64,7 +64,7 @@ class InteractionBuilder {
         return self
     }
 
-    func buildInteraction() -> Interaction? {
+    func makeInteraction() -> Interaction? {
         if !isValid {
             return nil
         }
