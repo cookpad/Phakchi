@@ -40,7 +40,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithInvalid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200)
@@ -58,7 +58,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithValid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200)
@@ -83,7 +83,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithHeaderUsingMatcher() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200,
@@ -113,7 +113,7 @@ class IntegrateTestCase: XCTestCase {
         let expectation = self.expectation(description: "contract is valid")
 
         let path = Matcher.like("/v1/recipes")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: path)
             .willRespondWith(status: 200,
@@ -141,7 +141,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithQuery() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes",
@@ -169,7 +169,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithTerm() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes",
@@ -205,7 +205,7 @@ class IntegrateTestCase: XCTestCase {
             "Content-Type" : "application/json"
         ]
 
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes",
@@ -235,7 +235,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes",
@@ -266,7 +266,7 @@ class IntegrateTestCase: XCTestCase {
     func testMockServiceRunWithEachLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes")
@@ -307,7 +307,7 @@ class IntegrateTestCase: XCTestCase {
     func testCleanSession() {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectation = self.expectation(description: "contract is valid")
-        _ = session.given("There are 2 recipes")
+        session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200)

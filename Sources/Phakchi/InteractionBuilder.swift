@@ -32,16 +32,19 @@ class InteractionBuilder {
         return newHeaders
     }
 
+    @discardableResult
     func given(_ providerState: String) -> Self {
         self.providerState = providerState
         return self
     }
 
+    @discardableResult
     func uponReceiving(_ description: String) -> Self {
         self.description = description
         return self
     }
 
+    @discardableResult
     func with(_ method: HTTPMethod,
               path: PactEncodable,
               query: Query? = nil,
@@ -56,6 +59,7 @@ class InteractionBuilder {
         return self
     }
 
+    @discardableResult
     func willRespondWith(_ status: Int,
                          headers: Headers? = nil,
                          body: Body? = nil) -> Self {

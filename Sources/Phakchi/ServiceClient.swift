@@ -12,11 +12,11 @@ protocol BaseServiceClient {
 }
 
 extension BaseServiceClient {
-    typealias makeRequestBlock = (NSMutableURLRequest) -> Void
+    typealias MakeRequestBlock = (NSMutableURLRequest) -> Void
     func makePactRequest(to endpoint: String,
                          method: HTTPMethod,
                          headers: [String: String] = adminHeaders,
-                         block: makeRequestBlock? = nil) -> NSMutableURLRequest {
+                         block: MakeRequestBlock? = nil) -> NSMutableURLRequest {
         let endpointURL = baseURL.appendingPathComponent(endpoint)
         let request = NSMutableURLRequest(url: endpointURL)
         request.httpMethod = method.rawValue.uppercased()

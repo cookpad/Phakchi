@@ -46,27 +46,32 @@ public class Session {
         self._isOpen = true
     }
 
+    @discardableResult
     public func given(_ providerState: String) -> Self {
-        _ = builder.given(providerState)
+        builder.given(providerState)
         return self
     }
 
+    @discardableResult
     public func uponReceiving(_ description: String) -> Self {
-        _ = builder.uponReceiving(description)
+        builder.uponReceiving(description)
         return self
     }
 
+    @discardableResult
     public func with(method: HTTPMethod, path: PactEncodable, query: Query? = nil, headers: Headers? = nil, body: Body? = nil) -> Self {
-        _ = builder.with(method, path: path, query: query, headers: headers, body: body)
+        builder.with(method, path: path, query: query, headers: headers, body: body)
         return self
     }
 
-    public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) {
-        _ = builder.willRespondWith(status, headers: headers, body: body)
+    @discardableResult
+    public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) -> Self {
+        builder.willRespondWith(status, headers: headers, body: body)
         if let interaction = builder.makeInteraction() {
             interactions.append(interaction)
             builder.clean()
         }
+        return self
     }
 
     public func run(completionBlock: TestCompletionBlock? = nil, executionBlock: @escaping TestExecutionBlock) {
