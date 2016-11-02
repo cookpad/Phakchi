@@ -15,7 +15,7 @@ class MockServiceClientTestCase: XCTestCase {
                                     self.client = MockServiceClient(baseURL: self.session.baseURL)
                                     exp.fulfill()
         }
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     override func tearDown() {
@@ -27,7 +27,7 @@ class MockServiceClientTestCase: XCTestCase {
             expectation.fulfill()
         }
 
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testRegisterInteraction() {
@@ -41,7 +41,7 @@ class MockServiceClientTestCase: XCTestCase {
             XCTAssertNil(error)
             expectation.fulfill()
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testRegisterInteractions() {
@@ -56,7 +56,7 @@ class MockServiceClientTestCase: XCTestCase {
             XCTAssertNil(error)
             expectation.fulfill()
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testVerify() {
@@ -71,7 +71,7 @@ class MockServiceClientTestCase: XCTestCase {
                 expectation.fulfill()
             }
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testVerifyInMainThread() {
@@ -86,7 +86,7 @@ class MockServiceClientTestCase: XCTestCase {
                 expectation.fulfill()
             }
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testVerifyWithValidRequest() {
@@ -107,7 +107,7 @@ class MockServiceClientTestCase: XCTestCase {
             }
             task.resume()
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testClearInteractions() {
@@ -123,7 +123,7 @@ class MockServiceClientTestCase: XCTestCase {
                 expectation.fulfill()
             }
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testWritePact() {
@@ -135,6 +135,6 @@ class MockServiceClientTestCase: XCTestCase {
                                 XCTAssertNil(error)
                                 expectation.fulfill()
         }
-        self.waitForExpectations(timeout: 5, handler: nil)
+        self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 }

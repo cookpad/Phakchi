@@ -12,7 +12,7 @@ class IntegrateTestCase: XCTestCase {
             self.session = session
             exp.fulfill()
         }
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func makeRequestURL(forEndpoint endpoint: String) -> URL {
@@ -52,7 +52,7 @@ class IntegrateTestCase: XCTestCase {
                     executionBlock: { (completeTest) in
                         completeTest()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithValid() {
@@ -77,7 +77,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithHeaderUsingMatcher() {
@@ -105,7 +105,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithPathUsingMatcher() {
@@ -135,7 +135,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithQuery() {
@@ -163,7 +163,7 @@ class IntegrateTestCase: XCTestCase {
                 completeTest()
                 }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithTerm() {
@@ -192,7 +192,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithDefaultRequestAndResponseHeader() {
@@ -229,7 +229,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithLike() {
@@ -260,7 +260,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testMockServiceRunWithEachLike() {
@@ -291,7 +291,7 @@ class IntegrateTestCase: XCTestCase {
                             completeTest()
                             }.resume()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testCloseSession() {
@@ -301,7 +301,7 @@ class IntegrateTestCase: XCTestCase {
             XCTAssertFalse(self.session.isOpen)
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testCleanSession() {
@@ -319,7 +319,7 @@ class IntegrateTestCase: XCTestCase {
                     executionBlock: { (completeTest) in
                         completeTest()
         })
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
 
         XCTAssertEqual(session.interactions.count, 1)
 
@@ -328,7 +328,7 @@ class IntegrateTestCase: XCTestCase {
             XCTAssertEqual(self.session.interactions.count, 0)
             cleanUpExpectation.fulfill()
         }
-        waitForExpectations(timeout: 5, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     override func tearDown() {
@@ -338,7 +338,7 @@ class IntegrateTestCase: XCTestCase {
         self.session.close {
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
 }

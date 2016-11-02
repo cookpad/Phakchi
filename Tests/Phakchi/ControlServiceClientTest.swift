@@ -21,7 +21,7 @@ class ControlServiceClientTestCase: XCTestCase {
                                     XCTAssertNotNil(session)
                                     expectationToStart.fulfill()
         }
-        waitForExpectations(timeout: 5.0, handler: nil)
+        waitForExpectations(timeout: 10.0, handler: nil)
     }
 
 }
