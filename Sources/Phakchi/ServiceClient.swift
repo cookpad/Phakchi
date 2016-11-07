@@ -12,18 +12,15 @@ protocol BaseServiceClient {
 }
 
 extension BaseServiceClient {
-    typealias MakeRequestBlock = (NSMutableURLRequest) -> Void
     func makePactRequest(to endpoint: String,
                          method: HTTPMethod,
-                         headers: [String: String] = adminHeaders,
-                         block: MakeRequestBlock? = nil) -> NSMutableURLRequest {
+                         headers: [String: String] = adminHeaders) -> URLRequest {
         let endpointURL = baseURL.appendingPathComponent(endpoint)
-        let request = NSMutableURLRequest(url: endpointURL)
+        var request = URLRequest(url: endpointURL)
         request.httpMethod = method.rawValue.uppercased()
         for (k, v) in headers {
             request.addValue(v, forHTTPHeaderField: k)
         }
-        block?(request)
         return request
     }
 
@@ -55,9 +52,8 @@ struct MockServiceClient: BaseServiceClient {
         let params = ["interactions" : interactions.map { $0.pactJSON }]
 
         let JSONData = params.JSONData
-        let request = makePactRequest(to: "interactions", method: .put) { (request) in
-            request.httpBody = JSONData
-        }
+        var request = makePactRequest(to: "interactions", method: .put)
+        request.httpBody = JSONData
         resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 
@@ -77,22 +73,21 @@ struct MockServiceClient: BaseServiceClient {
                    consumerName: String,
                    exportPath: URL?,
                    completionHandler: CompletionHandler? = nil) {
-        let request = makePactRequest(to: "pact", method: .post) { (request) in
-            var param: JSONObject = [
-                "consumer" : [
-                    "name" : consumerName
-                ],
-                "provider" : [
-                    "name" : providerName
-                ],
-                ]
-            if let exportPath = exportPath {
-                if exportPath.isFileURL {
-                    param["pact_dir"] = exportPath.path
-                }
+        var request = makePactRequest(to: "pact", method: .post)
+        var param: JSONObject = [
+            "consumer" : [
+                "name" : consumerName
+            ],
+            "provider" : [
+                "name" : providerName
+            ],
+            ]
+        if let exportPath = exportPath {
+            if exportPath.isFileURL {
+                param["pact_dir"] = exportPath.path
             }
-            request.httpBody = param.JSONData as Data
         }
+        request.httpBody = param.JSONData
         resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 

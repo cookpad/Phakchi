@@ -22,16 +22,16 @@ class MockServiceClientTestCase: XCTestCase {
         super.tearDown()
         self.client.cleanInteractions()
 
-        let expectation = self.expectation(description: "session is closed")
+        let expectationToRun = expectation(description: "session is closed")
         self.session.close { _ in
-            expectation.fulfill()
+            expectationToRun.fulfill()
         }
 
         waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testRegisterInteraction() {
-        let expectation = self.expectation(description: "interactions are registered")
+        let expectationToRun = expectation(description: "interactions are registered")
         let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
@@ -39,13 +39,13 @@ class MockServiceClientTestCase: XCTestCase {
         self.client.registerInteraction(interaction) { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 200)
             XCTAssertNil(error)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         }
         self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testRegisterInteractions() {
-        let expectation = self.expectation(description: "interactions are registered")
+        let expectationToRun = expectation(description: "interactions are registered")
         let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction0 = Interaction(description: "Get integrates", providerState: "", request: request, response: response)
@@ -54,13 +54,13 @@ class MockServiceClientTestCase: XCTestCase {
         self.client.registerInteractions([interaction0, interaction1]) { (data, response, error) in
             XCTAssertEqual(response?.statusCode, 200)
             XCTAssertNil(error)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         }
         self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testVerify() {
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
@@ -68,14 +68,14 @@ class MockServiceClientTestCase: XCTestCase {
         self.client.registerInteraction(interaction) { (data, response, error) in
             self.client.verify { (result) in
                 XCTAssertFalse(result)
-                expectation.fulfill()
+                expectationToRun.fulfill()
             }
         }
         self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testVerifyInMainThread() {
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
@@ -83,14 +83,14 @@ class MockServiceClientTestCase: XCTestCase {
         self.client.registerInteraction(interaction) { (data, response, error) in
             self.client.verify { (result) in
                 XCTAssertTrue(Thread.isMainThread)
-                expectation.fulfill()
+                expectationToRun.fulfill()
             }
         }
         self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testVerifyWithValidRequest() {
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
@@ -102,7 +102,7 @@ class MockServiceClientTestCase: XCTestCase {
             let task = session.dataTask(with: request) { (data, response, error) in
                 self.client.verify { (result) in
                     XCTAssertTrue(result)
-                    expectation.fulfill()
+                    expectationToRun.fulfill()
                 }
             }
             task.resume()
@@ -111,7 +111,7 @@ class MockServiceClientTestCase: XCTestCase {
     }
 
     func testClearInteractions() {
-        let expectation = self.expectation(description: "interactions are cleaned")
+        let expectationToRun = expectation(description: "interactions are cleaned")
         let request = Interaction.Request(method: .get, path: "/integrates/", query: nil, headers: nil, body: nil)
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
@@ -120,20 +120,20 @@ class MockServiceClientTestCase: XCTestCase {
             self.client.cleanInteractions() { (data, response, error) in
                 XCTAssertEqual(response?.statusCode, 200)
                 XCTAssertNil(error)
-                expectation.fulfill()
+                expectationToRun.fulfill()
             }
         }
         self.waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testWritePact() {
-        let expectation = self.expectation(description: "pact file is generated")
+        let expectationToRun = expectation(description: "pact file is generated")
         self.client.writePact(for: "providerName",
                               consumerName: "consumerName",
                               exportPath: URL(fileURLWithPath: "./tmp/pacts/foo/bar")) { (data, response, error) in
                                 XCTAssertEqual(response?.statusCode, 200)
                                 XCTAssertNil(error)
-                                expectation.fulfill()
+                                expectationToRun.fulfill()
         }
         self.waitForExpectations(timeout: 10.0, handler: nil)
     }

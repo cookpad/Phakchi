@@ -15,14 +15,14 @@ class InteractionBuilderTestCase: XCTestCase {
                   query: nil, headers:
                 headers,
                   body: nil)
-            .willRespondWith(200)
+            .willRespondWith(status: 200)
         return self.builder.makeInteraction()
     }
 
     fileprivate func makeInteractionWithResponseHeaders(_ headers: Headers?) -> Interaction! {
         self.builder.uponReceiving("Hello")
             .with(.get, path: "/integrates")
-            .willRespondWith(200, headers: headers, body: nil)
+            .willRespondWith(status: 200, headers: headers, body: nil)
         return self.builder.makeInteraction()
     }
 
@@ -35,7 +35,7 @@ class InteractionBuilderTestCase: XCTestCase {
             .isValid)
         XCTAssertTrue(self.builder.uponReceiving("Hello")
             .with(.get, path: "/integrates/")
-            .willRespondWith(200)
+            .willRespondWith(status: 200)
             .isValid)
     }
 

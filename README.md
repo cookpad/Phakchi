@@ -41,7 +41,7 @@ For information on how to use CocoaPods, please refer to the official CocoaPods 
 
 Before you write your Pact definitions, you have to configure the mock server.
 
-First, add `Gemfile` to project root
+First, add a Gemfile to your project's root directory.
 
 ```ruby
 source "https://rubygems.org"
@@ -155,6 +155,6 @@ You can have a look at [this documentation](https://github.com/realestate-com-au
 ### Requirements
 
 - iOS 8+
-- Swift 3.0
-- Xcode 8+
+- Swift 3.0.1
+- Xcode 8.1+
 

@@ -60,7 +60,7 @@ class InteractionBuilder {
     }
 
     @discardableResult
-    func willRespondWith(_ status: Int,
+    func willRespondWith(status: Int,
                          headers: Headers? = nil,
                          body: Body? = nil) -> Self {
         let newHeaders = makeHeaders(headers, defaultHeaders:defaultResponseHeaders)

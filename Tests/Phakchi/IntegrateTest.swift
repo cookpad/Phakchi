@@ -39,7 +39,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithInvalid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
@@ -47,7 +47,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid) in
             XCTAssertFalse(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         completeTest()
@@ -57,7 +57,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithValid() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
@@ -65,7 +65,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -82,7 +82,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithHeaderUsingMatcher() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
@@ -93,7 +93,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -110,7 +110,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithPathUsingMatcher() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
 
         let path = Matcher.like("/v1/recipes")
         session.given("There are 2 recipes")
@@ -123,7 +123,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -140,7 +140,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithQuery() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
@@ -150,7 +150,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         }, executionBlock: { (completeTest) in
             let configuration = URLSessionConfiguration.default
             let session = URLSession(configuration: configuration)
@@ -168,7 +168,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithTerm() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
@@ -178,7 +178,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -197,7 +197,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithDefaultRequestAndResponseHeader() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.defaultRequestHeader = [
             "Auth" : "authtoken"
         ]
@@ -214,7 +214,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -234,7 +234,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
@@ -246,7 +246,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -265,7 +265,7 @@ class IntegrateTestCase: XCTestCase {
 
     func testMockServiceRunWithEachLike() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
@@ -278,7 +278,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid: Bool) in
             XCTAssertTrue(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         let configuration = URLSessionConfiguration.default
@@ -295,18 +295,18 @@ class IntegrateTestCase: XCTestCase {
     }
 
     func testCloseSession() {
-        let expectation = self.expectation(description: "session is closed")
+        let expectationToRun = expectation(description: "session is closed")
         XCTAssertTrue(session.isOpen)
         session.close {
             XCTAssertFalse(self.session.isOpen)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         }
         waitForExpectations(timeout: 10.0, handler: nil)
     }
 
     func testCleanSession() {
         XCTAssertEqual(controlServer.sessions.count, 1)
-        let expectation = self.expectation(description: "contract is valid")
+        let expectationToRun = expectation(description: "contract is valid")
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
@@ -314,7 +314,7 @@ class IntegrateTestCase: XCTestCase {
 
         session.run(completionBlock: { (isValid) in
             XCTAssertFalse(isValid)
-            expectation.fulfill()
+            expectationToRun.fulfill()
         },
                     executionBlock: { (completeTest) in
                         completeTest()
@@ -323,7 +323,7 @@ class IntegrateTestCase: XCTestCase {
 
         XCTAssertEqual(session.interactions.count, 1)
 
-        let cleanUpExpectation = self.expectation(description: "interactions are cleaned")
+        let cleanUpExpectation = expectation(description: "interactions are cleaned")
         session.clean {
             XCTAssertEqual(self.session.interactions.count, 0)
             cleanUpExpectation.fulfill()
@@ -334,9 +334,9 @@ class IntegrateTestCase: XCTestCase {
     override func tearDown() {
         super.tearDown()
 
-        let expectation = self.expectation(description: "session is closed")
+        let expectationToRun = expectation(description: "session is closed")
         self.session.close {
-            expectation.fulfill()
+            expectationToRun.fulfill()
         }
         waitForExpectations(timeout: 10.0, handler: nil)
     }

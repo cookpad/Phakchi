@@ -8,10 +8,7 @@ public class Session {
 
     public let consumerName: String
     public let providerName: String
-    private var _isOpen = false
-    public var isOpen: Bool {
-        return _isOpen
-    }
+    public private(set) var isOpen: Bool
     public var baseURL: URL {
         get {
             return mockServiceClient.baseURL as URL
@@ -43,7 +40,7 @@ public class Session {
         self.consumerName = consumerName
         self.providerName = providerName
         self.mockServiceClient = MockServiceClient(baseURL: baseURL)
-        self._isOpen = true
+        self.isOpen = true
     }
 
     @discardableResult
@@ -66,7 +63,7 @@ public class Session {
 
     @discardableResult
     public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) -> Self {
-        builder.willRespondWith(status, headers: headers, body: body)
+        builder.willRespondWith(status: status, headers: headers, body: body)
         if let interaction = builder.makeInteraction() {
             interactions.append(interaction)
             builder.clean()
@@ -107,7 +104,7 @@ public class Session {
 
     public func close(_ completionBlock: CloseCompletionBlock? = nil) {
         mockServiceClient.close { (data, response, error) in
-            self._isOpen = false
+            self.isOpen = false
             completionBlock?()
         }
     }

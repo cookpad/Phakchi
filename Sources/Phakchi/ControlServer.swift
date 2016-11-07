@@ -3,7 +3,7 @@ import Foundation
 public class ControlServer {
     public static let `default` = ControlServer()
     public typealias StartSessionCompletionBlock = (Session?) -> Void
-    // want to make concealed setter from external
+    // To have an internal setter
     private var _sessions: [Session] = []
     public var sessions: [Session] {
         return _sessions
