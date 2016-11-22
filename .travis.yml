@@ -3,6 +3,9 @@ matrix:
     - os: osx
       language: objective-c
       osx_image: xcode8.1
+      install:
+        - bundle install
+        - brew install swiftlint
       script:
         - swiftlint
         - bundle exec scripts/start_control_server.sh
