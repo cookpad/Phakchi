@@ -35,7 +35,7 @@ extension Bool: PactEncodable {
 
 extension String: PactEncodable {
     public var pactJSON: PactEncodable {
-        return self as PactEncodable
+        return self
     }
 }
 
