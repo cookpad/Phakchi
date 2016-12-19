@@ -14,7 +14,7 @@ struct Interaction {
         var headers: Headers?
         var body: Body?
 
-        var pactJSON: PactJSON {
+        var pactJSON: JSONElement {
             var JSON = [
                 "method": method.rawValue.uppercased(),
                 "path": path.pactJSON,
@@ -37,7 +37,7 @@ struct Interaction {
         let headers: Headers?
         let body: Body?
 
-        var pactJSON: PactJSON {
+        var pactJSON: JSONElement {
             var JSON: JSONObject = ["status": status]
             if let headers = headers {
                 JSON["headers"] = headers.pactJSON
@@ -54,7 +54,7 @@ struct Interaction {
     var request: Request
     var response: Response
 
-    var pactJSON: PactJSON {
+    var pactJSON: JSONElement {
         var param: JSONObject = [
             "description": description,
             "request": request.pactJSON,

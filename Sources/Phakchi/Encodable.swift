@@ -1,20 +1,20 @@
 import Foundation
 
-typealias JSONObject = [String: PactJSON]
+typealias JSONObject = [String: JSONElement]
 
 public protocol PactEncodable {
-    var pactJSON: PactJSON { get }
+    var pactJSON: JSONElement { get }
 }
 
 extension String: PactEncodable {
-    public var pactJSON: PactJSON {
+    public var pactJSON: JSONElement {
         return self
     }
 }
 
 extension Dictionary: PactEncodable {
-    public var pactJSON: PactJSON {
-        var jsonObject: [Key: PactJSON] = [:]
+    public var pactJSON: JSONElement {
+        var jsonObject: [Key: JSONElement] = [:]
         for (key, value) in self {
             if let value = value as? PactEncodable {
                 jsonObject[key] = value.pactJSON
@@ -24,11 +24,11 @@ extension Dictionary: PactEncodable {
     }
 }
 
-public protocol PactJSON {
-    var json: PactJSON { get }
+public protocol JSONElement {
+    var json: JSONElement { get }
 }
 
-extension PactJSON {
+extension JSONElement {
     var JSONData: Data {
         if let data = try? JSONSerialization.data(withJSONObject: json, options: []) {
             return data
@@ -37,34 +37,34 @@ extension PactJSON {
     }
 }
 
-extension Int: PactJSON {
-    public var json: PactJSON {
+extension Int: JSONElement {
+    public var json: JSONElement {
         return self
     }
 }
 
-extension Double: PactJSON {
-    public var json: PactJSON {
+extension Double: JSONElement {
+    public var json: JSONElement {
         return self
     }
 }
 
-extension Bool: PactJSON {
-    public var json: PactJSON {
+extension Bool: JSONElement {
+    public var json: JSONElement {
         return self
     }
 }
 
-extension String: PactJSON {
-    public var json: PactJSON {
+extension String: JSONElement {
+    public var json: JSONElement {
         return self
     }
 }
 
-extension Array: PactJSON {
-    public var json: PactJSON {
-        return flatMap { element -> PactJSON? in
-            if let element = element as? PactJSON {
+extension Array: JSONElement {
+    public var json: JSONElement {
+        return flatMap { element -> JSONElement? in
+            if let element = element as? JSONElement {
                 return element.json
             }
             return nil
@@ -72,11 +72,11 @@ extension Array: PactJSON {
     }
 }
 
-extension Dictionary: PactJSON {
-    public var json: PactJSON {
-        var jsonObject: [Key: PactJSON] = [:]
+extension Dictionary: JSONElement {
+    public var json: JSONElement {
+        var jsonObject: [Key: JSONElement] = [:]
         for (key, value) in self {
-            if let value = value as? PactJSON {
+            if let value = value as? JSONElement {
                 jsonObject[key] = value.json
             }
         }
