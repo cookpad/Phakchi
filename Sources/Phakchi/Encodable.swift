@@ -1,61 +1,83 @@
 import Foundation
 
-typealias JSONObject = [String: PactEncodable]
+typealias JSONObject = [String: PactJSON]
 
 public protocol PactEncodable {
-    var pactJSON: PactEncodable { get }
+    var pactJSON: PactJSON { get }
 }
 
-extension PactEncodable {
+extension String: PactEncodable {
+    public var pactJSON: PactJSON {
+        return self
+    }
+}
+
+extension Dictionary: PactEncodable {
+    public var pactJSON: PactJSON {
+        var jsonObject: [Key: PactJSON] = [:]
+        for (key, value) in self {
+            if let value = value as? PactEncodable {
+                jsonObject[key] = value.pactJSON
+            }
+        }
+        return jsonObject
+    }
+}
+
+public protocol PactJSON {
+    var json: PactJSON { get }
+}
+
+extension PactJSON {
     var JSONData: Data {
-        if let data = try? JSONSerialization.data(withJSONObject: pactJSON, options: []) {
+        if let data = try? JSONSerialization.data(withJSONObject: json, options: []) {
             return data
         }
         fatalError("Could not deserialize JSON")
     }
 }
 
-extension Int: PactEncodable {
-    public var pactJSON: PactEncodable {
+extension Int: PactJSON {
+    public var json: PactJSON {
         return self
     }
 }
 
-extension Double: PactEncodable {
-    public var pactJSON: PactEncodable {
+extension Double: PactJSON {
+    public var json: PactJSON {
         return self
     }
 }
 
-extension Bool: PactEncodable {
-    public var pactJSON: PactEncodable {
+extension Bool: PactJSON {
+    public var json: PactJSON {
         return self
     }
 }
 
-extension String: PactEncodable {
-    public var pactJSON: PactEncodable {
+extension String: PactJSON {
+    public var json: PactJSON {
         return self
     }
 }
 
-extension Array: PactEncodable {
-    public var pactJSON: PactEncodable {
-        return flatMap { element -> PactEncodable? in
-            if let element = element as? PactEncodable {
-                return element.pactJSON
+extension Array: PactJSON {
+    public var json: PactJSON {
+        return flatMap { element -> PactJSON? in
+            if let element = element as? PactJSON {
+                return element.json
             }
             return nil
         }
     }
 }
 
-extension Dictionary: PactEncodable {
-    public var pactJSON: PactEncodable {
-        var jsonObject: [Key: PactEncodable] = [:]
+extension Dictionary: PactJSON {
+    public var json: PactJSON {
+        var jsonObject: [Key: PactJSON] = [:]
         for (key, value) in self {
-            if let value = value as? PactEncodable {
-                jsonObject[key] = value.pactJSON
+            if let value = value as? PactJSON {
+                jsonObject[key] = value.json
             }
         }
         return jsonObject
