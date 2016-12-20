@@ -4,140 +4,128 @@ private let adminHeaders = [
     "X-Pact-Mock-Service": "true",
     "Content-Type": "application/json",
 ]
-typealias CompletionHandler = (NSData?, NSHTTPURLResponse?, NSError?) -> Void
+typealias CompletionHandler = (Data?, HTTPURLResponse?, Error?) -> Void
 typealias VerificationCompletionHandler = (Bool) -> Void
 
 protocol BaseServiceClient {
-    var baseURL: NSURL { get }
+    var baseURL: URL { get }
 }
 
 extension BaseServiceClient {
-    typealias buildRequestBlock = (NSMutableURLRequest) -> Void
-    private func buildPactRequest(to endpoint: String,
-                                     method: HTTPMethod,
-                                     headers: [String: String] = adminHeaders,
-                                     block: buildRequestBlock? = nil) -> NSMutableURLRequest {
-        #if swift(>=2.3)
-            guard let endpointURL = baseURL.URLByAppendingPathComponent(endpoint) else {
-            fatalError("Invalid endpoint \(endpoint)")
-            }
-        #else
-            let endpointURL = baseURL.URLByAppendingPathComponent(endpoint)
-        #endif
-        let request = NSMutableURLRequest(URL: endpointURL)
-        request.HTTPMethod = method.rawValue
+    func makePactRequest(to endpoint: String,
+                         method: HTTPMethod,
+                         headers: [String: String] = adminHeaders) -> URLRequest {
+        let endpointURL = baseURL.appendingPathComponent(endpoint)
+        var request = URLRequest(url: endpointURL)
+        request.httpMethod = method.rawValue.uppercased()
         for (k, v) in headers {
             request.addValue(v, forHTTPHeaderField: k)
         }
-        block?(request)
         return request
     }
 
-    private func resumeSessionTask(request: NSURLRequest, completionHandler: CompletionHandler?) {
-        let configure = NSURLSessionConfiguration.defaultSessionConfiguration()
-        let session = NSURLSession(configuration: configure)
-        let task = session.dataTaskWithRequest(request) { (data, response, error) in
-            dispatch_async(dispatch_get_main_queue()) {
-                completionHandler?(data, response as? NSHTTPURLResponse, error)
+    func resumeSessionTask(_ request: URLRequest, completionHandler: CompletionHandler? = nil) {
+        let configure = URLSessionConfiguration.default
+        let session = URLSession(configuration: configure)
+        let task = session.dataTask(with: request, completionHandler: { data, response, error in
+            DispatchQueue.main.async {
+                let httpResponse = response as? HTTPURLResponse ?? nil
+                completionHandler?(data, httpResponse, error)
             }
-        }
+        })
         task.resume()
     }
 }
 
 struct MockServiceClient: BaseServiceClient {
-    let baseURL: NSURL
+    let baseURL: URL
 
-    init(baseURL: NSURL) {
+    init(baseURL: URL) {
         self.baseURL = baseURL
     }
 
-    func registerInteraction(interaction: Interaction, completionHandler: CompletionHandler? = nil) {
+    func registerInteraction(_ interaction: Interaction, completionHandler: CompletionHandler? = nil) {
         registerInteractions([interaction], completionHandler: completionHandler)
     }
 
-    func registerInteractions(interactions: [Interaction], completionHandler: CompletionHandler? = nil) {
+    func registerInteractions(_ interactions: [Interaction], completionHandler: CompletionHandler? = nil) {
         let params = ["interactions" : interactions.map { $0.pactJSON }]
 
         let JSONData = params.JSONData
-        let request = buildPactRequest(to: "interactions", method: .PUT) { (request) in
-            request.HTTPBody = JSONData
-        }
-        resumeSessionTask(request, completionHandler: completionHandler)
+        var request = makePactRequest(to: "interactions", method: .put)
+        request.httpBody = JSONData
+        resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 
-    func verify(completionHandler: VerificationCompletionHandler) {
-        let request = buildPactRequest(to: "interactions/verification", method: .GET)
-        resumeSessionTask(request) { (data, response, error) in
-            completionHandler(response?.statusCode == 200)
+    func verify(_ completionHandler: VerificationCompletionHandler? = nil) {
+        let request = makePactRequest(to: "interactions/verification", method: .get)
+        resumeSessionTask(request as URLRequest) { (data, response, error) in
+            completionHandler?(response?.statusCode == 200)
         }
     }
 
-    func cleanInteractions(completionHandler: CompletionHandler? = nil) {
-        let request = buildPactRequest(to: "interactions", method: .DELETE)
-        resumeSessionTask(request, completionHandler: completionHandler)
+    func cleanInteractions(_ completionHandler: CompletionHandler? = nil) {
+        let request = makePactRequest(to: "interactions", method: .delete)
+        resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 
     func writePact(for providerName: String,
-                       consumerName: String,
-                       exportPath: NSURL?,
-                       completionHandler: CompletionHandler? = nil) {
-        let request = buildPactRequest(to: "pact", method: .POST) { (request) in
-            var param: [String: AnyObject] = [
-                "consumer" : [
-                    "name" : consumerName
-                ],
-                "provider" : [
-                    "name" : providerName
-                ],
+                   consumerName: String,
+                   exportPath: URL?,
+                   completionHandler: CompletionHandler? = nil) {
+        var request = makePactRequest(to: "pact", method: .post)
+        var param: JSONObject = [
+            "consumer" : [
+                "name" : consumerName
+            ],
+            "provider" : [
+                "name" : providerName
+            ],
             ]
-            if let exportPath = exportPath {
-                if exportPath.fileURL {
-                    if let path = exportPath.path {
-                        param["pact_dir"] = path
-                    }
-                }
+        if let exportPath = exportPath {
+            if exportPath.isFileURL {
+                param["pact_dir"] = exportPath.path
             }
-            request.HTTPBody = param.JSONData
         }
-        resumeSessionTask(request, completionHandler: completionHandler)
+        request.httpBody = param.JSONData
+        resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 
-    func closeSession(completionHandler: CompletionHandler? = nil) {
-        let request = buildPactRequest(to: "session", method: .DELETE)
-        resumeSessionTask(request, completionHandler: completionHandler)
+    func close(handler completionHandler: CompletionHandler? = nil) {
+        let request = makePactRequest(to: "session", method: .delete)
+        resumeSessionTask(request as URLRequest, completionHandler: completionHandler)
     }
 }
 
 struct ControlServiceClient: BaseServiceClient {
     typealias CreateSessionCompletionHandler = (Session?) -> Void
-    private let defaultControlServerURL = NSURL(string: "http://localhost:8080")!
+    private let defaultControlServerURL = URL(string: "http://localhost:8080")!
 
-    let baseURL: NSURL
+    let baseURL: URL
 
     init() {
         baseURL = defaultControlServerURL
     }
 
-    init(baseURL: NSURL) {
+    init(baseURL: URL) {
         self.baseURL = baseURL
     }
 
-    private func buildStartMockServerHeader(for consumerName: String, providerName: String) -> [String: String] {
+    private func makeMockServerHeader(for consumerName: String, providerName: String) -> [String: String] {
         return [
             "X-Pact-Consumer" : consumerName,
             "X-Pact-Provider" : providerName,
         ]
     }
 
-    func startSession(withConsumerName consumerName: String, providerName: String, completionHandler: CreateSessionCompletionHandler) {
-        let request = buildPactRequest(to: "",
-                                       method: .POST,
-                                       headers: buildStartMockServerHeader(for: consumerName, providerName: providerName))
-        resumeSessionTask(request) { (data, response, error) in
+    func start(session consumerName: String, providerName: String, completionHandler: @escaping CreateSessionCompletionHandler) {
+        let request = makePactRequest(to: "",
+                                      method: .post,
+                                      headers: makeMockServerHeader(for: consumerName, providerName: providerName))
+        resumeSessionTask(request as URLRequest) { (data, response, error) in
             if let response = response,
-                location = response.allHeaderFields["X-Pact-Mock-Service-Location"] as? String,
-                let baseURL = NSURL(string: location) {
+                let location = response.allHeaderFields["X-Pact-Mock-Service-Location"] as? String,
+                let baseURL = URL(string: location) {
                 let session: Session = Session(consumerName: consumerName, providerName: providerName, baseURL: baseURL)
                 completionHandler(session)
             } else {

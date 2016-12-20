@@ -1,7 +1,7 @@
 import Foundation
 
 public class Session {
-    public typealias TestExecutionBlock = ((Void) -> Void) -> Void
+    public typealias TestExecutionBlock = (@escaping (Void) -> Void) -> Void
     public typealias TestCompletionBlock = (Bool) -> Void
     public typealias CleanCompletionBlock = (Void) -> Void
     public typealias CloseCompletionBlock = (Void) -> Void
@@ -9,12 +9,12 @@ public class Session {
     public let consumerName: String
     public let providerName: String
     public private(set) var isOpen: Bool
-    public var baseURL: NSURL {
+    public var baseURL: URL {
         get {
-            return mockServiceClient.baseURL
+            return mockServiceClient.baseURL as URL
         }
     }
-    public var exportPath: NSURL? = nil
+    public var exportPath: URL? = nil
 
     private let mockServiceClient: MockServiceClient
     private let builder = InteractionBuilder()
@@ -36,38 +36,42 @@ public class Session {
         }
     }
 
-    required public init(consumerName: String, providerName: String, baseURL: NSURL) {
+    required public init(consumerName: String, providerName: String, baseURL: URL) {
         self.consumerName = consumerName
         self.providerName = providerName
         self.mockServiceClient = MockServiceClient(baseURL: baseURL)
         self.isOpen = true
     }
 
-    public func given(providerState: String) -> Self {
+    @discardableResult
+    public func given(_ providerState: String) -> Self {
         builder.given(providerState)
         return self
     }
 
-    public func uponReceiving(description: String) -> Self {
+    @discardableResult
+    public func uponReceiving(_ description: String) -> Self {
         builder.uponReceiving(description)
         return self
     }
 
-    public func with(method method: HTTPMethod, path: PactEncodable, query: Query? = nil, headers: Headers? = nil, body: Body? = nil) -> Self {
+    @discardableResult
+    public func with(method: HTTPMethod, path: PactEncodable, query: Query? = nil, headers: Headers? = nil, body: Body? = nil) -> Self {
         builder.with(method, path: path, query: query, headers: headers, body: body)
         return self
     }
 
-    public func willRespondWith(status status: Int, headers: Headers? = nil, body: Body? = nil) -> Self {
-        builder.willRespondWith(status, headers: headers, body: body)
-        if let interaction = builder.buildInteraction() {
+    @discardableResult
+    public func willRespondWith(status: Int, headers: Headers? = nil, body: Body? = nil) -> Self {
+        builder.willRespondWith(status: status, headers: headers, body: body)
+        if let interaction = builder.makeInteraction() {
             interactions.append(interaction)
             builder.clean()
         }
         return self
     }
 
-    public func run(completionBlock completionBlock: TestCompletionBlock? = nil, executionBlock: TestExecutionBlock) {
+    public func run(completionBlock: TestCompletionBlock? = nil, executionBlock: @escaping TestExecutionBlock) {
         if !isOpen {
             print("This Pact session is already closed")
             return
@@ -78,9 +82,9 @@ public class Session {
                 self.mockServiceClient.verify { (isValid) in
                     if isValid {
                         self.mockServiceClient.writePact(for: self.providerName,
-                                                consumerName: self.consumerName,
-                                                  exportPath: self.exportPath) { (data, response, error) in
-                                                      completionBlock?(isValid)
+                                                         consumerName: self.consumerName,
+                                                         exportPath: self.exportPath) { (data, response, error) in
+                                                            completionBlock?(isValid)
                         }
                     } else {
                         completionBlock?(isValid)
@@ -91,15 +95,15 @@ public class Session {
         }
     }
 
-    public func clean(completionBlock: CleanCompletionBlock? = nil) {
+    public func clean(_ completionBlock: CleanCompletionBlock? = nil) {
         mockServiceClient.cleanInteractions { (data, response, error) in
             self.interactions.removeAll()
             completionBlock?()
         }
     }
 
-    public func close(completionBlock: CloseCompletionBlock? = nil) {
-        mockServiceClient.closeSession { (data, response, error) in
+    public func close(_ completionBlock: CloseCompletionBlock? = nil) {
+        mockServiceClient.close { (data, response, error) in
             self.isOpen = false
             completionBlock?()
         }

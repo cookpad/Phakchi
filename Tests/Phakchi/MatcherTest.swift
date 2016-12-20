@@ -16,9 +16,9 @@ class MatcherTestCase: XCTestCase {
     }
 
     func testLike() {
-        let like = Matcher.like(10).pactJSON
-        XCTAssertEqual(like["json_class"], "Pact::SomethingLike")
-        XCTAssertEqual(like["contents"], 10)
+        let like = Matcher.like(10).pactJSON as! JSONObject
+        XCTAssertEqual(like["json_class"] as! String, "Pact::SomethingLike")
+        XCTAssertEqual(like["contents"] as! Int, 10)
     }
 
     func testEachLike() {

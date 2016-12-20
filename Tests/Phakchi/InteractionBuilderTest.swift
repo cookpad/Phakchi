@@ -9,21 +9,21 @@ class InteractionBuilderTestCase: XCTestCase {
         self.builder = InteractionBuilder()
     }
 
-    private func buildInteractionWithRequestHeaders(headers: Headers?) -> Interaction! {
+    fileprivate func makeInteractionWithRequestHeaders(_ headers: Headers?) -> Interaction! {
         self.builder.uponReceiving("Hello")
-            .with(.GET, path: "/integrates",
-                query: nil, headers:
+            .with(.get, path: "/integrates",
+                  query: nil, headers:
                 headers,
-                body: nil)
-            .willRespondWith(200)
-        return self.builder.buildInteraction()
+                  body: nil)
+            .willRespondWith(status: 200)
+        return self.builder.makeInteraction()
     }
 
-    private func buildInteractionWithResponseHeaders(headers: Headers?) -> Interaction! {
+    fileprivate func makeInteractionWithResponseHeaders(_ headers: Headers?) -> Interaction! {
         self.builder.uponReceiving("Hello")
-            .with(.GET, path: "/integrates")
-            .willRespondWith(200, headers: headers, body: nil)
-        return self.builder.buildInteraction()
+            .with(.get, path: "/integrates")
+            .willRespondWith(status: 200, headers: headers, body: nil)
+        return self.builder.makeInteraction()
     }
 
     func testIsValid() {
@@ -31,11 +31,11 @@ class InteractionBuilderTestCase: XCTestCase {
         XCTAssertFalse(self.builder.uponReceiving("Hello").isValid)
         XCTAssertFalse(self.builder
             .uponReceiving("Hello")
-            .with(.GET, path: "/integrates/")
+            .with(.get, path: "/integrates/")
             .isValid)
         XCTAssertTrue(self.builder.uponReceiving("Hello")
-            .with(.GET, path: "/integrates/")
-            .willRespondWith(200)
+            .with(.get, path: "/integrates/")
+            .willRespondWith(status: 200)
             .isValid)
     }
 
@@ -45,36 +45,35 @@ class InteractionBuilderTestCase: XCTestCase {
             "Authorization" : "authtoken"
         ]
 
-        let interaction0 = buildInteractionWithRequestHeaders(["Host" : "example.com"])
-        XCTAssertEqual(interaction0.request.headers?["Content-Type"] as? String, "application/json")
-        XCTAssertEqual(interaction0.request.headers?["Authorization"] as? String, "authtoken")
-        XCTAssertEqual(interaction0.request.headers?["Host"] as? String, "example.com")
+        let interaction0 = makeInteractionWithRequestHeaders(["Host" : "example.com"])
+        XCTAssertEqual(interaction0?.request.headers?["Authorization"] as? String, "authtoken")
+        XCTAssertEqual(interaction0?.request.headers?["Host"] as? String, "example.com")
 
         self.builder.defaultRequestHeaders = [
             "Content-Type" : "application/json",
             "Authorization" : "authtoken"
         ]
 
-        let interaction1 = buildInteractionWithRequestHeaders(["Content-Type" : "text/plain"])
-        XCTAssertEqual(interaction1.request.headers?["Content-Type"] as? String, "text/plain")
-        XCTAssertEqual(interaction1.request.headers?["Authorization"] as? String, "authtoken")
+        let interaction1 = makeInteractionWithRequestHeaders(["Content-Type" : "text/plain"])
+        XCTAssertEqual(interaction1?.request.headers?["Content-Type"] as? String, "text/plain")
+        XCTAssertEqual(interaction1?.request.headers?["Authorization"] as? String, "authtoken")
 
         self.builder.defaultRequestHeaders = [
             "Content-Type" : "application/json",
             "Authorization" : "authtoken"
         ]
 
-        let interaction2 = buildInteractionWithRequestHeaders(nil)
-        XCTAssertEqual(interaction2.request.headers?["Content-Type"] as? String, "application/json")
-        XCTAssertEqual(interaction2.request.headers?["Authorization"] as? String, "authtoken")
+        let interaction2 = makeInteractionWithRequestHeaders(nil)
+        XCTAssertEqual(interaction2?.request.headers?["Content-Type"] as? String, "application/json")
+        XCTAssertEqual(interaction2?.request.headers?["Authorization"] as? String, "authtoken")
 
         self.builder.defaultRequestHeaders = nil
-        let interaction3 = buildInteractionWithRequestHeaders(["Content-Type" : "text/plain"])
-        XCTAssertEqual(interaction3.request.headers?["Content-Type"] as? String, "text/plain")
+        let interaction3 = makeInteractionWithRequestHeaders(["Content-Type" : "text/plain"])
+        XCTAssertEqual(interaction3?.request.headers?["Content-Type"] as? String, "text/plain")
 
         self.builder.defaultRequestHeaders = nil
-        let interaction4 = buildInteractionWithRequestHeaders(nil)
-        XCTAssertNil(interaction4.request.headers)
+        let interaction4 = makeInteractionWithRequestHeaders(nil)
+        XCTAssertNil(interaction4?.request.headers)
     }
 
     func testDefaultResponseHeader() {
@@ -83,36 +82,36 @@ class InteractionBuilderTestCase: XCTestCase {
             "Authorization" : "authtoken"
         ]
 
-        let interaction0 = buildInteractionWithResponseHeaders(["Host" : "example.com"])
-        XCTAssertEqual(interaction0.response.headers?["Content-Type"] as? String, "application/json")
-        XCTAssertEqual(interaction0.response.headers?["Authorization"] as? String, "authtoken")
-        XCTAssertEqual(interaction0.response.headers?["Host"] as? String, "example.com")
+        let interaction0 = makeInteractionWithResponseHeaders(["Host" : "example.com"])
+        XCTAssertEqual(interaction0?.response.headers?["Content-Type"] as? String, "application/json")
+        XCTAssertEqual(interaction0?.response.headers?["Authorization"] as? String, "authtoken")
+        XCTAssertEqual(interaction0?.response.headers?["Host"] as? String, "example.com")
 
         self.builder.defaultResponseHeaders = [
             "Content-Type" : "application/json",
             "Authorization" : "authtoken"
         ]
 
-        let interaction1 = buildInteractionWithResponseHeaders(["Content-Type" : "text/plain"])
-        XCTAssertEqual(interaction1.response.headers?["Content-Type"] as? String, "text/plain")
-        XCTAssertEqual(interaction1.response.headers?["Authorization"] as? String, "authtoken")
+        let interaction1 = makeInteractionWithResponseHeaders(["Content-Type" : "text/plain"])
+        XCTAssertEqual(interaction1?.response.headers?["Content-Type"] as? String, "text/plain")
+        XCTAssertEqual(interaction1?.response.headers?["Authorization"] as? String, "authtoken")
 
         self.builder.defaultResponseHeaders = [
             "Content-Type" : "application/json",
             "Authorization" : "authtoken"
         ]
 
-        let interaction2 = buildInteractionWithResponseHeaders(nil)
-        XCTAssertEqual(interaction2.response.headers?["Content-Type"] as? String, "application/json")
-        XCTAssertEqual(interaction2.response.headers?["Authorization"] as? String, "authtoken")
+        let interaction2 = makeInteractionWithResponseHeaders(nil)
+        XCTAssertEqual(interaction2?.response.headers?["Content-Type"] as? String, "application/json")
+        XCTAssertEqual(interaction2?.response.headers?["Authorization"] as? String, "authtoken")
 
         self.builder.defaultResponseHeaders = nil
-        let interaction3 = buildInteractionWithResponseHeaders(["Content-Type" : "text/plain"])
-        XCTAssertEqual(interaction3.response.headers?["Content-Type"] as? String, "text/plain")
+        let interaction3 = makeInteractionWithResponseHeaders(["Content-Type" : "text/plain"])
+        XCTAssertEqual(interaction3?.response.headers?["Content-Type"] as? String, "text/plain")
 
         self.builder.defaultResponseHeaders = nil
-        let interaction4 = buildInteractionWithResponseHeaders(nil)
-        XCTAssertNil(interaction4.response.headers)
+        let interaction4 = makeInteractionWithResponseHeaders(nil)
+        XCTAssertNil(interaction4?.response.headers)
     }
 
 }

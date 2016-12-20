@@ -8,4 +8,3 @@ disabled_rules:
   - variable_name
   - type_body_length
   - line_length
-  - conditional_binding_cascade

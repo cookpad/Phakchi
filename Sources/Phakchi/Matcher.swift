@@ -4,7 +4,7 @@ struct TermMatcher: PactEncodable {
     let valueForGeneration: String
     let pattern: String
 
-    var pactJSON: AnyObject {
+    var pactJSON: Any {
         return [
             "json_class": "Pact::Term",
             "data": [
@@ -19,40 +19,40 @@ struct TermMatcher: PactEncodable {
     }
 }
 
-struct LikeMatcher<T: PactEncodable>: PactEncodable {
+struct LikeMatcher<T>: PactEncodable {
     let value: T
 
-    var pactJSON: AnyObject {
+    var pactJSON: Any {
         return [
             "json_class": "Pact::SomethingLike",
-            "contents": value.pactJSON,
+            "contents": value,
         ]
     }
 }
 
-struct EachLikeMatcher<T: PactEncodable>: PactEncodable {
+struct EachLikeMatcher<T>: PactEncodable {
     let value: T
     let minimumCount: Int
 
-    var pactJSON: AnyObject {
+    var pactJSON: Any {
         return [
             "json_class": "Pact::ArrayLike",
-            "contents": value.pactJSON,
+            "contents": value,
             "min": minimumCount,
         ]
     }
 }
 
 public struct Matcher {
-    public static func term(generate generate: String, matcher: String) -> PactEncodable {
+    public static func term(generate: String, matcher: String) -> PactEncodable {
         return TermMatcher(valueForGeneration: generate, pattern: matcher)
     }
 
-    public static func like<T: PactEncodable>(value: T) -> PactEncodable {
+    public static func like<T>(_ value: T) -> PactEncodable {
         return LikeMatcher(value: value)
     }
 
-    public static func eachLike<T: PactEncodable>(value: T, min: Int = 1) -> PactEncodable {
+    public static func eachLike<T>(_ value: T, min: Int = 1) -> PactEncodable {
         return EachLikeMatcher(value: value, minimumCount: min)
     }
 }

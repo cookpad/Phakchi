@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Phakchi"
-  s.version      = "1.0.0"
+  s.version      = "2.0.0"
   s.summary      = "A Pact consumer library for iOS"
   s.description  = <<-DESC
                    This library provides a Swift version DSL for creating pacts.

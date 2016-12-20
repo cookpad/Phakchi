@@ -16,7 +16,7 @@ class InteractionBuilder {
 
     }
 
-    private func buildHeaders(headers: Headers?, defaultHeaders: Headers?) -> Headers? {
+    private func makeHeaders(_ headers: Headers?, defaultHeaders: Headers?) -> Headers? {
         guard let defaultHeaders = defaultHeaders else {
             return headers
         }
@@ -32,22 +32,25 @@ class InteractionBuilder {
         return newHeaders
     }
 
-    func given(providerState: String) -> Self {
+    @discardableResult
+    func given(_ providerState: String) -> Self {
         self.providerState = providerState
         return self
     }
 
-    func uponReceiving(description: String) -> Self {
+    @discardableResult
+    func uponReceiving(_ description: String) -> Self {
         self.description = description
         return self
     }
 
-    func with(method: HTTPMethod,
+    @discardableResult
+    func with(_ method: HTTPMethod,
               path: PactEncodable,
               query: Query? = nil,
               headers: Headers? = nil,
               body: Body? = nil) -> Self {
-        let newHeaders = buildHeaders(headers, defaultHeaders: defaultRequestHeaders)
+        let newHeaders = makeHeaders(headers, defaultHeaders: defaultRequestHeaders)
         requestExpectation = Interaction.Request(method: method,
                                                  path: path,
                                                  query: query,
@@ -56,15 +59,16 @@ class InteractionBuilder {
         return self
     }
 
+    @discardableResult
     func willRespondWith(status: Int,
                          headers: Headers? = nil,
                          body: Body? = nil) -> Self {
-        let newHeaders = buildHeaders(headers, defaultHeaders:defaultResponseHeaders)
+        let newHeaders = makeHeaders(headers, defaultHeaders:defaultResponseHeaders)
         responseExpectation = Interaction.Response(status: status, headers: newHeaders, body: body)
         return self
     }
 
-    func buildInteraction() -> Interaction? {
+    func makeInteraction() -> Interaction? {
         if !isValid {
             return nil
         }

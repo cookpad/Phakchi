@@ -1,52 +1,46 @@
 import Foundation
 
-typealias JSONObject = [String: AnyObject]
+typealias JSONObject = [String: Any]
 
 public protocol PactEncodable {
-    var pactJSON: AnyObject { get }
+    var pactJSON: Any { get }
 }
 
 extension PactEncodable {
-    var JSONData: NSData {
-        if let data = try? NSJSONSerialization.dataWithJSONObject(pactJSON, options: []) {
-            return data
+    public var pactJSON: Any {
+        return self
+    }
+}
+
+extension String: PactEncodable { }
+
+extension Array: PactEncodable {
+    public var pactJSON: Any {
+        return flatMap { element -> Any? in
+            if let element = element as? PactEncodable {
+                return element.pactJSON
+            }
+            return nil
         }
-        fatalError("Could not deserialize JSON")
-    }
-}
-
-extension Int: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self
-    }
-}
-
-extension Double: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self
-    }
-}
-
-extension Bool: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self
-    }
-}
-
-extension String: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self
-    }
-}
-
-extension Array where Element: AnyObject {
-    public var pactJSON: AnyObject {
-        return self
     }
 }
 
 extension Dictionary: PactEncodable {
-    public var pactJSON: AnyObject {
-        return self as! AnyObject
+    public var pactJSON: Any {
+        var jsonObject: [Key: Any] = [:]
+        for (key, value) in self {
+            if let value = value as? PactEncodable {
+                jsonObject[key] = value.pactJSON
+            }
+        }
+        return jsonObject
+    }
+
+    var JSONData: Data {
+        print(pactJSON)
+        if let data = try? JSONSerialization.data(withJSONObject: pactJSON, options: []) {
+            return data
+        }
+        fatalError("Could not deserialize JSON")
     }
 }
