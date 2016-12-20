@@ -6,8 +6,8 @@ public typealias Query = [String: PactEncodable]
 public typealias Headers = [String: PactEncodable]
 public typealias Body = PactEncodable
 
-struct Interaction {
-    struct Request {
+struct Interaction: PactEncodable {
+    struct Request: PactEncodable {
         let method: HTTPMethod
         let path: PactEncodable
         var query: Query?
@@ -32,7 +32,7 @@ struct Interaction {
         }
     }
 
-    struct Response {
+    struct Response: PactEncodable {
         let status: Int
         let headers: Headers?
         let body: Body?
