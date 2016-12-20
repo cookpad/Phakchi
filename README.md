@@ -1,7 +1,7 @@
 # Phakchi
 
 [![Build Status](https://travis-ci.org/cookpad/Phakchi.svg?branch=master)](https://travis-ci.org/cookpad/Phakchi)
-[![Language](https://img.shields.io/badge/language-Swift%202.2%7C2.3-orange.svg)](https://swift.org)
+[![Language](https://img.shields.io/badge/language-Swift%203-orange.svg)](https://swift.org)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
 
 Pact consumer client library in Swift
