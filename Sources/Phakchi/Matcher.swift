@@ -4,7 +4,7 @@ struct TermMatcher: PactEncodable {
     let valueForGeneration: String
     let pattern: String
 
-    var pactJSON: JSONElement {
+    var pactJSON: Any {
         return [
             "json_class": "Pact::Term",
             "data": [
@@ -19,25 +19,25 @@ struct TermMatcher: PactEncodable {
     }
 }
 
-struct LikeMatcher<T: JSONElement>: PactEncodable {
+struct LikeMatcher<T>: PactEncodable {
     let value: T
 
-    var pactJSON: JSONElement {
+    var pactJSON: Any {
         return [
             "json_class": "Pact::SomethingLike",
-            "contents": value.json,
+            "contents": value,
         ]
     }
 }
 
-struct EachLikeMatcher<T: JSONElement>: PactEncodable {
+struct EachLikeMatcher<T>: PactEncodable {
     let value: T
     let minimumCount: Int
 
-    var pactJSON: JSONElement {
+    var pactJSON: Any {
         return [
             "json_class": "Pact::ArrayLike",
-            "contents": value.json,
+            "contents": value,
             "min": minimumCount,
         ]
     }
@@ -48,11 +48,11 @@ public struct Matcher {
         return TermMatcher(valueForGeneration: generate, pattern: matcher)
     }
 
-    public static func like<T: JSONElement>(_ value: T) -> PactEncodable {
+    public static func like<T>(_ value: T) -> PactEncodable {
         return LikeMatcher(value: value)
     }
 
-    public static func eachLike<T: JSONElement>(_ value: T, min: Int = 1) -> PactEncodable {
+    public static func eachLike<T>(_ value: T, min: Int = 1) -> PactEncodable {
         return EachLikeMatcher(value: value, minimumCount: min)
     }
 }
