@@ -12,6 +12,7 @@ extension PactEncodable {
     }
 }
 
+extension Int: PactEncodable { }
 extension String: PactEncodable { }
 
 extension Array: PactEncodable {
@@ -37,7 +38,6 @@ extension Dictionary: PactEncodable {
     }
 
     var JSONData: Data {
-        print(pactJSON)
         if let data = try? JSONSerialization.data(withJSONObject: pactJSON, options: []) {
             return data
         }
