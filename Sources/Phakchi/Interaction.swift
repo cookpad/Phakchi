@@ -1,6 +1,6 @@
 import Foundation
 
-typealias providerState = String
+typealias ProviderState = String
 
 public typealias Query = [String: PactEncodable]
 public typealias Headers = [String: PactEncodable]

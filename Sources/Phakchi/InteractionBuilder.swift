@@ -1,6 +1,5 @@
 import Foundation
 
-typealias ProviderState = String
 typealias InteractionBuilderCallback = (Interaction) -> Void
 
 class InteractionBuilder {

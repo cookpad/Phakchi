@@ -75,13 +75,13 @@ public class Session {
             return
         }
 
-        mockServiceClient.registerInteractions(interactions) { (data, response, error) in
+        mockServiceClient.registerInteractions(interactions) { (_, _, _) in
             let completeTest = {
                 self.mockServiceClient.verify { (isValid) in
                     if isValid {
                         self.mockServiceClient.writePact(for: self.providerName,
                                                          consumerName: self.consumerName,
-                                                         exportPath: self.exportPath) { (data, response, error) in
+                                                         exportPath: self.exportPath) { (_, _, _) in
                                                             completionBlock?(isValid)
                         }
                     } else {
@@ -94,14 +94,14 @@ public class Session {
     }
 
     public func clean(_ completionBlock: CleanCompletionBlock? = nil) {
-        mockServiceClient.cleanInteractions { (data, response, error) in
+        mockServiceClient.cleanInteractions { (_, _, _) in
             self.interactions.removeAll()
             completionBlock?()
         }
     }
 
     public func close(_ completionBlock: CloseCompletionBlock? = nil) {
-        mockServiceClient.close { (data, response, error) in
+        mockServiceClient.close { (_, _, _) in
             self.isOpen = false
             completionBlock?()
         }

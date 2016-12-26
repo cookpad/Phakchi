@@ -73,7 +73,7 @@ class IntegrateTestCase: XCTestCase {
                         let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
                         var request = URLRequest(url: requestURL)
                         request.httpMethod = HTTPMethod.get.rawValue
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })
@@ -87,7 +87,7 @@ class IntegrateTestCase: XCTestCase {
             .uponReceiving("a request for recipe")
             .with(method: .get, path: "/v1/recipes")
             .willRespondWith(status: 200,
-                             headers: ["Content-Type" : Matcher.term(generate: "application/json",
+                             headers: ["Content-Type": Matcher.term(generate: "application/json",
                                                                      matcher: "application/json")],
                              body: nil)
 
@@ -101,7 +101,7 @@ class IntegrateTestCase: XCTestCase {
                         let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
                         var request = URLRequest(url: requestURL)
                         request.httpMethod = HTTPMethod.get.rawValue
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })
@@ -117,7 +117,7 @@ class IntegrateTestCase: XCTestCase {
             .uponReceiving("a request for recipe")
             .with(method: .get, path: path)
             .willRespondWith(status: 200,
-                             headers: ["Content-Type" : Matcher.term(generate: "application/json",
+                             headers: ["Content-Type": Matcher.term(generate: "application/json",
                                                                      matcher: "application/json")],
                              body: nil)
 
@@ -131,7 +131,7 @@ class IntegrateTestCase: XCTestCase {
                         let requestURL = self.makeRequestURL(forEndpoint: "/v1/recipes")
                         var request = URLRequest(url: requestURL)
                         request.httpMethod = HTTPMethod.get.rawValue
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })
@@ -159,7 +159,7 @@ class IntegrateTestCase: XCTestCase {
             components.query = "keyword=carrot"
             var request = URLRequest(url: components.url!)
             request.httpMethod = HTTPMethod.get.rawValue
-            session.dataTask(with: request) { (data, response, error) in
+            session.dataTask(with: request) { (_, _, _) in
                 completeTest()
                 }.resume()
         })
@@ -173,7 +173,7 @@ class IntegrateTestCase: XCTestCase {
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes",
-                  query: ["keyword" : Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
+                  query: ["keyword": Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -188,7 +188,7 @@ class IntegrateTestCase: XCTestCase {
                         components.query = "keyword=eggplant" // should be match
                         var request = URLRequest(url: components.url!)
                         request.httpMethod = HTTPMethod.get.rawValue
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })
@@ -199,17 +199,17 @@ class IntegrateTestCase: XCTestCase {
         XCTAssertEqual(controlServer.sessions.count, 1)
         let expectationToRun = expectation(description: "contract is valid")
         session.defaultRequestHeader = [
-            "Auth" : "authtoken"
+            "Auth": "authtoken"
         ]
         session.defaultResponseHeader = [
-            "Content-Type" : "application/json"
+            "Content-Type": "application/json"
         ]
 
         session.given("There are 2 recipes")
             .uponReceiving("a request for recipe")
             .with(method: .get,
                   path: "/v1/recipes",
-                  query: ["keyword" : Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
+                  query: ["keyword": Matcher.term(generate: "carrot", matcher: "^[a-z]+")])
             .willRespondWith(status: 200)
 
         session.run(completionBlock: { (isValid: Bool) in
@@ -225,7 +225,7 @@ class IntegrateTestCase: XCTestCase {
                         var request = URLRequest(url: components.url!)
                         request.httpMethod = HTTPMethod.get.rawValue
                         request.addValue("authtoken", forHTTPHeaderField: "Auth")
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })
@@ -256,7 +256,7 @@ class IntegrateTestCase: XCTestCase {
                         components.query = "keyword=eggplant" // should be match
                         var request = URLRequest(url: components.url!)
                         request.httpMethod = HTTPMethod.get.rawValue
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })
@@ -287,7 +287,7 @@ class IntegrateTestCase: XCTestCase {
                         components.path = "/v1/recipes"
                         var request = URLRequest(url: components.url!)
                         request.httpMethod = HTTPMethod.get.rawValue
-                        session.dataTask(with: request) { (data, response, error) in
+                        session.dataTask(with: request) { (_, _, _) in
                             completeTest()
                             }.resume()
         })

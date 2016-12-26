@@ -49,7 +49,7 @@ struct MockServiceClient: BaseServiceClient {
     }
 
     func registerInteractions(_ interactions: [Interaction], completionHandler: CompletionHandler? = nil) {
-        let params = ["interactions" : interactions.map { $0.pactJSON }]
+        let params = ["interactions": interactions.map { $0.pactJSON }]
 
         let JSONData = params.JSONData
         var request = makePactRequest(to: "interactions", method: .put)
@@ -59,7 +59,7 @@ struct MockServiceClient: BaseServiceClient {
 
     func verify(_ completionHandler: VerificationCompletionHandler? = nil) {
         let request = makePactRequest(to: "interactions/verification", method: .get)
-        resumeSessionTask(request as URLRequest) { (data, response, error) in
+        resumeSessionTask(request as URLRequest) { (_, response, _) in
             completionHandler?(response?.statusCode == 200)
         }
     }
@@ -75,11 +75,11 @@ struct MockServiceClient: BaseServiceClient {
                    completionHandler: CompletionHandler? = nil) {
         var request = makePactRequest(to: "pact", method: .post)
         var param: JSONObject = [
-            "consumer" : [
-                "name" : consumerName
+            "consumer": [
+                "name": consumerName
             ],
-            "provider" : [
-                "name" : providerName
+            "provider": [
+                "name": providerName
             ],
             ]
         if let exportPath = exportPath {
@@ -113,8 +113,8 @@ struct ControlServiceClient: BaseServiceClient {
 
     private func makeMockServerHeader(for consumerName: String, providerName: String) -> [String: String] {
         return [
-            "X-Pact-Consumer" : consumerName,
-            "X-Pact-Provider" : providerName,
+            "X-Pact-Consumer": consumerName,
+            "X-Pact-Provider": providerName,
         ]
     }
 
@@ -122,7 +122,7 @@ struct ControlServiceClient: BaseServiceClient {
         let request = makePactRequest(to: "",
                                       method: .post,
                                       headers: makeMockServerHeader(for: consumerName, providerName: providerName))
-        resumeSessionTask(request as URLRequest) { (data, response, error) in
+        resumeSessionTask(request as URLRequest) { (_, response, _) in
             if let response = response,
                 let location = response.allHeaderFields["X-Pact-Mock-Service-Location"] as? String,
                 let baseURL = URL(string: location) {

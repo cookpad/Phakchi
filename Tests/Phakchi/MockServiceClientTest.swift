@@ -36,7 +36,7 @@ class MockServiceClientTestCase: XCTestCase {
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
-        self.client.registerInteraction(interaction) { (data, response, error) in
+        self.client.registerInteraction(interaction) { (_, response, error) in
             XCTAssertEqual(response?.statusCode, 200)
             XCTAssertNil(error)
             expectationToRun.fulfill()
@@ -51,7 +51,7 @@ class MockServiceClientTestCase: XCTestCase {
         let interaction0 = Interaction(description: "Get integrates", providerState: "", request: request, response: response)
         let interaction1 = Interaction(description: "Get integrates", providerState: "", request: request, response: response)
 
-        self.client.registerInteractions([interaction0, interaction1]) { (data, response, error) in
+        self.client.registerInteractions([interaction0, interaction1]) { (_, response, error) in
             XCTAssertEqual(response?.statusCode, 200)
             XCTAssertNil(error)
             expectationToRun.fulfill()
@@ -65,7 +65,7 @@ class MockServiceClientTestCase: XCTestCase {
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
-        self.client.registerInteraction(interaction) { (data, response, error) in
+        self.client.registerInteraction(interaction) { (_, _, _) in
             self.client.verify { (result) in
                 XCTAssertFalse(result)
                 expectationToRun.fulfill()
@@ -80,8 +80,8 @@ class MockServiceClientTestCase: XCTestCase {
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
-        self.client.registerInteraction(interaction) { (data, response, error) in
-            self.client.verify { (result) in
+        self.client.registerInteraction(interaction) { (_, _, _) in
+            self.client.verify { (_) in
                 XCTAssertTrue(Thread.isMainThread)
                 expectationToRun.fulfill()
             }
@@ -95,11 +95,11 @@ class MockServiceClientTestCase: XCTestCase {
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
-        self.client.registerInteraction(interaction) { (data, response, error) in
+        self.client.registerInteraction(interaction) { (_, _, _) in
             let request = URLRequest(url: self.session.baseURL.appendingPathComponent("/integrates/"))
             let configuration = URLSessionConfiguration.default
             let session = URLSession(configuration: configuration)
-            let task = session.dataTask(with: request) { (data, response, error) in
+            let task = session.dataTask(with: request) { (_, _, _) in
                 self.client.verify { (result) in
                     XCTAssertTrue(result)
                     expectationToRun.fulfill()
@@ -116,8 +116,8 @@ class MockServiceClientTestCase: XCTestCase {
         let response = Interaction.Response(status: 200, headers: nil, body: nil)
         let interaction = Interaction(description: "Get integrates", providerState: nil, request: request, response: response)
 
-        self.client.registerInteraction(interaction) { (data, response, error) in
-            self.client.cleanInteractions() { (data, response, error) in
+        self.client.registerInteraction(interaction) { (_, _, _) in
+            self.client.cleanInteractions { (_, response, error) in
                 XCTAssertEqual(response?.statusCode, 200)
                 XCTAssertNil(error)
                 expectationToRun.fulfill()
@@ -130,7 +130,7 @@ class MockServiceClientTestCase: XCTestCase {
         let expectationToRun = expectation(description: "pact file is generated")
         self.client.writePact(for: "providerName",
                               consumerName: "consumerName",
-                              exportPath: URL(fileURLWithPath: "./tmp/pacts/foo/bar")) { (data, response, error) in
+                              exportPath: URL(fileURLWithPath: "./tmp/pacts/foo/bar")) { (_, response, error) in
                                 XCTAssertEqual(response?.statusCode, 200)
                                 XCTAssertNil(error)
                                 expectationToRun.fulfill()
