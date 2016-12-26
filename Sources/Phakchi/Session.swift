@@ -10,9 +10,7 @@ public class Session {
     public let providerName: String
     public private(set) var isOpen: Bool
     public var baseURL: URL {
-        get {
-            return mockServiceClient.baseURL as URL
-        }
+        return mockServiceClient.baseURL as URL
     }
     public var exportPath: URL? = nil
 
